@@ -50,4 +50,6 @@ export default {
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
   'menu.houseSummary': '您的房源',
+  'menu.userQuery': '用户查询',
+  'menu.registered.users': '注册用户',
 };

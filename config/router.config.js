@@ -43,6 +43,12 @@ export default [
     component: './house-summary/views/house-detail',
   },
   {
+    path: '/userRegister',
+    name: 'register',
+    icon: 'userAdd',
+    component: './user-register/views/index',
+  },
+  {
     path: '/dashboard',
     name: 'dashboard',
     icon: 'dashboard',

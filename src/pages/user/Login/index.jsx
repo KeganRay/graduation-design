@@ -6,7 +6,7 @@ import {
   UserOutlined,
   WeiboCircleOutlined,
 } from '@ant-design/icons';
-import { Alert, message, Tabs } from 'antd';
+import { Alert, message, Tabs, Modal, Form, Input } from 'antd';
 import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { useIntl, history, FormattedMessage, SelectLang, useModel } from 'umi';
@@ -14,6 +14,8 @@ import Footer from '@/components/Footer';
 import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
+import route from '../../../../mock/route';
+import Register from './register';
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -29,61 +31,63 @@ const LoginMessage = ({ content }) => (
 const Login = () => {
   const [userLoginState, setUserLoginState] = useState({});
   const [type, setType] = useState('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const [name, setName] = useState('initname'); //用户姓名
+  const [isRegister, setisRegister] = useState(false); //是否弹出注册框
+  const { initialState, setInitialState } = useModel('@@initialState'); //用于全局管理登陆者信息
+  let registerRef = null; //子节点标签
   const intl = useIntl();
 
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = async (userMsg) => {
+    console.log(userMsg);
     // const userInfo = await initialState?.fetchUserInfo?.();
     const userInfo = {
-      name: 'Serati Ma',
+      ...userMsg.data,
       avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-      userid: '00000001',
-      email: 'antdesign@alipay.com',
       signature: '海纳百川，有容乃大',
       title: '交互专家',
       group: '蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED',
-      tags: [
-        {
-          key: '0',
-          label: '很有想法的',
-        },
-        {
-          key: '1',
-          label: '专注设计',
-        },
-        {
-          key: '2',
-          label: '辣~',
-        },
-        {
-          key: '3',
-          label: '大长腿',
-        },
-        {
-          key: '4',
-          label: '川妹子',
-        },
-        {
-          key: '5',
-          label: '海纳百川',
-        },
-      ],
-      notifyCount: 12,
-      unreadCount: 11,
+      // tags: [
+      //   {
+      //     key: '0',
+      //     label: '很有想法的',
+      //   },
+      //   {
+      //     key: '1',
+      //     label: '专注设计',
+      //   },
+      //   {
+      //     key: '2',
+      //     label: '辣~',
+      //   },
+      //   {
+      //     key: '3',
+      //     label: '大长腿',
+      //   },
+      //   {
+      //     key: '4',
+      //     label: '川妹子',
+      //   },
+      //   {
+      //     key: '5',
+      //     label: '海纳百川',
+      //   },
+      // ],
+      // notifyCount: 12,
+      // unreadCount: 11,
       country: 'China',
       // access: getAccess(),
-      geographic: {
-        province: {
-          label: '浙江省',
-          key: '330000',
-        },
-        city: {
-          label: '杭州市',
-          key: '330100',
-        },
-      },
-      address: '西湖区工专路 77 号',
-      phone: '0752-268888888',
+      // geographic: {
+      //   province: {
+      //     label: '浙江省',
+      //     key: '330000',
+      //   },
+      //   city: {
+      //     label: '杭州市',
+      //     key: '330100',
+      //   },
+      // },
+      // address: '西湖区工专路 77 号',
+      // phone: '0752-268888888',
     };
     console.log('user:', userInfo);
     if (userInfo) {
@@ -103,47 +107,19 @@ const Login = () => {
           defaultMessage: '登录成功！',
         });
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
+
+        await fetchUserInfo(msg);
         history.push('/');
-        // /** 此方法会跳转到 redirect 参数所在的位置 */
-        //
-        // if (!history) return;
-        // const { query } = history.location;
-        // const { redirect } = query;
-        // history.push(redirect || '/');
-        // return;
       }
     });
-    // console.log(msg); // 如果失败去设置用户错误信息
-    // setUserLoginState(msg);
+  };
 
-    // try {
-    //   // 登录
-    //   const msg = await login({ ...values, type });
-    //
-    //   if (msg.status === 'ok') {
-    //     const defaultLoginSuccessMessage = intl.formatMessage({
-    //       id: 'pages.login.success',
-    //       defaultMessage: '登录成功！',
-    //     });
-    //     message.success(defaultLoginSuccessMessage);
-    //     await fetchUserInfo();
-    //     // /** 此方法会跳转到 redirect 参数所在的位置 */
-    //     //
-    //     if (!history) return;
-    //     history.push("/")
-    //     return;
-    //   }
-    //
-    //   console.log(msg); // 如果失败去设置用户错误信息
-    //   setUserLoginState(msg);
-    // } catch (error) {
-    //   const defaultLoginFailureMessage = intl.formatMessage({
-    //     id: 'pages.login.failure',
-    //     defaultMessage: '登录失败，请重试！',
-    //   });
-    //   message.error(defaultLoginFailureMessage);
-    // }
+  //点击注册
+  const handleRegistered = async () => {
+    // await setInitialState((s) => ({ ...s, currentUser: {} }));
+    if (registerRef) {
+      registerRef.handleRegister(); //调用处弹框
+    }
   };
 
   const { status, type: loginType } = userLoginState;
@@ -154,11 +130,14 @@ const Login = () => {
       </div>
       <div className={styles.content}>
         <LoginForm
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={intl.formatMessage({
-            id: 'pages.layouts.userLayout.title',
-          })}
+          logo={
+            <img
+              alt="logo"
+              src={`https://uploadfile.huiyi8.com/up/b1/79/20/b17920d9a5413337f83258fe7039d333.png.270.jpg`}
+            />
+          }
+          title="易租居房源管理系统"
+          subTitle={'易租居房源管理系统管理您的住宅'}
           initialValues={{
             autoLogin: true,
           }}
@@ -349,8 +328,14 @@ const Login = () => {
               style={{
                 float: 'right',
               }}
+              onClick={handleRegistered}
             >
-              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
+              <FormattedMessage id="menu.registered.users" defaultMessage="注册用户" />
+              <Register
+                onRef={(ref) => {
+                  registerRef = ref;
+                }}
+              ></Register>
             </a>
           </div>
         </LoginForm>
