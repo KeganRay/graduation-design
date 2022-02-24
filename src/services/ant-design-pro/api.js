@@ -26,15 +26,8 @@ export async function outLogin(options) {
 
 export async function login(payload) {
   console.log(payload);
-  return axios.post(`/api/getuser`, payload);
-  // return request('/api/login/account', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   data: body,
-  //   ...(options || {}),
-  // });
+  return axios.post(`/api/user`, payload);
+
 }
 
 /** 此处后端没有提供注释 GET /api/notices */

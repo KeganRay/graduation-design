@@ -22,7 +22,7 @@ export default {
   'pages.login.forgotPassword': 'Forgot Password ?',
   'pages.login.submit': 'Login',
   'pages.login.loginWith': 'Login with :',
-  'pages.login.registerAccount': 'Register Account',
+  'pages.login.registerAccount': 'Register.jsx Account',
   'pages.welcome.advancedComponent': 'Advanced Component',
   'pages.welcome.link': 'Welcome',
   'pages.welcome.advancedLayout': 'Advanced Layout',
