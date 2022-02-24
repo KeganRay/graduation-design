@@ -1,21 +1,18 @@
 import {
-  AlipayCircleOutlined,
   LockOutlined,
   MobileOutlined,
-  TaobaoCircleOutlined,
   UserOutlined,
-  WeiboCircleOutlined,
 } from '@ant-design/icons';
-import { Alert, message, Tabs, Modal, Form, Input, Radio, Button } from 'antd';
+import { Alert, message, Tabs, } from 'antd';
 import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { useIntl, history, FormattedMessage, SelectLang, useModel } from 'umi';
-import Footer from '@/components/Footer';
+// import Footer from '@/components/Footer';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
-import route from '../../../../mock/route';
-import Register from './Register'
-import * as services from './services'
+// import route from '../../../../mock/route';
+import Register from './Register';
+import * as services from './services';
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -23,12 +20,12 @@ const LoginMessage = ({ content }) => (
       marginBottom: 24,
     }}
     message={content}
-    type='error'
+    type="error"
     showIcon
   />
 );
 
-const Login = () => {
+const Login = (props) => {
   const [userLoginState, setUserLoginState] = useState({});
   const [type, setType] = useState('account');
   const [name, setName] = useState('initname'); //用户姓名
@@ -41,7 +38,7 @@ const Login = () => {
     // const userInfo = await initialState?.fetchUserInfo?.();
     const userInfo = {
       ...userMsg.data,
-      avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',//头像
+      avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png', //头像
       signature: '海纳百川，有容乃大',
       title: '交互专家',
       group: '蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED',
@@ -53,7 +50,7 @@ const Login = () => {
         {
           key: '1',
           label: '专注设计',
-        }
+        },
       ],
       notifyCount: 12,
       unreadCount: 11,
@@ -73,10 +70,9 @@ const Login = () => {
     };
     console.log('user:', userInfo);
     if (userInfo) {
-      await setInitialState((s) => ({ ...s, currentUser: userInfo }));
-      // dispatch({
-      //
-      // })
+      await setInitialState((s) => {
+        return { ...s, currentUser: userInfo };
+      });
     }
   };
 
@@ -94,21 +90,19 @@ const Login = () => {
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo(msg);
         history.push('/');
-      }else if(msg.code===-1){
-        message.error('请检查账号密码')
+      } else if (msg.code === -1) {
+        message.error('请检查账号密码');
       }
     });
   };
 
-//点击注册
+  //点击注册
   const handleRegistered = async () => {
     // await setInitialState((s) => ({ ...s, currentUser: {} }));
     if (registerRef) {
       registerRef.handleRegister(); //调用处弹框
     }
   };
-
-
   const { status, type: loginType } = userLoginState;
 
   return (
@@ -120,11 +114,11 @@ const Login = () => {
         <LoginForm
           logo={
             <img
-              alt='logo'
+              alt="logo"
               src={`https://uploadfile.huiyi8.com/up/b1/79/20/b17920d9a5413337f83258fe7039d333.png.270.jpg`}
             />
           }
-          title='易租居房源管理系统'
+          title="易租居房源管理系统"
           subTitle={'易租居房源管理系统管理您的住宅'}
           initialValues={{
             autoLogin: true,
@@ -147,14 +141,14 @@ const Login = () => {
         >
           <Tabs activeKey={type} onChange={setType}>
             <Tabs.TabPane
-              key='account'
+              key="account"
               tab={intl.formatMessage({
                 id: 'pages.login.accountLogin.tab',
                 defaultMessage: '账户密码登录',
               })}
             />
             <Tabs.TabPane
-              key='mobile'
+              key="mobile"
               tab={intl.formatMessage({
                 id: 'pages.login.phoneLogin.tab',
                 defaultMessage: '手机号登录',
@@ -173,7 +167,7 @@ const Login = () => {
           {type === 'account' && (
             <>
               <ProFormText
-                name='account'
+                name="account"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
@@ -187,15 +181,15 @@ const Login = () => {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id='pages.login.username.required'
-                        defaultMessage='请输入用户名!'
+                        id="pages.login.username.required"
+                        defaultMessage="请输入用户名!"
                       />
                     ),
                   },
                 ]}
               />
               <ProFormText.Password
-                name='password'
+                name="password"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
@@ -209,8 +203,8 @@ const Login = () => {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id='pages.login.password.required'
-                        defaultMessage='请输入密码！'
+                        id="pages.login.password.required"
+                        defaultMessage="请输入密码！"
                       />
                     ),
                   },
@@ -219,7 +213,7 @@ const Login = () => {
             </>
           )}
 
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content='验证码错误' />}
+          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
           {type === 'mobile' && (
             <>
               <ProFormText
@@ -227,7 +221,7 @@ const Login = () => {
                   size: 'large',
                   prefix: <MobileOutlined className={styles.prefixIcon} />,
                 }}
-                name='mobile'
+                name="mobile"
                 placeholder={intl.formatMessage({
                   id: 'pages.login.phoneNumber.placeholder',
                   defaultMessage: '手机号',
@@ -237,8 +231,8 @@ const Login = () => {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id='pages.login.phoneNumber.required'
-                        defaultMessage='请输入手机号！'
+                        id="pages.login.phoneNumber.required"
+                        defaultMessage="请输入手机号！"
                       />
                     ),
                   },
@@ -246,8 +240,8 @@ const Login = () => {
                     pattern: /^1\d{10}$/,
                     message: (
                       <FormattedMessage
-                        id='pages.login.phoneNumber.invalid'
-                        defaultMessage='手机号格式错误！'
+                        id="pages.login.phoneNumber.invalid"
+                        defaultMessage="手机号格式错误！"
                       />
                     ),
                   },
@@ -278,14 +272,14 @@ const Login = () => {
                     defaultMessage: '获取验证码',
                   });
                 }}
-                name='captcha'
+                name="captcha"
                 rules={[
                   {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id='pages.login.captcha.required'
-                        defaultMessage='请输入验证码！'
+                        id="pages.login.captcha.required"
+                        defaultMessage="请输入验证码！"
                       />
                     ),
                   },
@@ -309,8 +303,8 @@ const Login = () => {
               marginBottom: 24,
             }}
           >
-            <ProFormCheckbox noStyle name='autoLogin'>
-              <FormattedMessage id='pages.login.rememberMe' defaultMessage='自动登录' />
+            <ProFormCheckbox noStyle name="autoLogin">
+              <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
             </ProFormCheckbox>
             <a
               style={{
@@ -318,13 +312,13 @@ const Login = () => {
               }}
               onClick={handleRegistered}
             >
-              <FormattedMessage id='menu.registered.users' defaultMessage='注册用户' />
+              <FormattedMessage id="menu.registered.users" defaultMessage="注册用户" />
             </a>
-          <Register
-            onRef={(ref) => {
-              registerRef = ref;
-            }}
-          ></Register>
+            <Register
+              onRef={(ref) => {
+                registerRef = ref;
+              }}
+            ></Register>
           </div>
         </LoginForm>
       </div>

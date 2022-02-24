@@ -19,12 +19,12 @@ export default [
         path: '/user/register-result',
         component: './user/register-result',
       },
-      {
-        name: 'register',
-        icon: 'smile',
-        path: '/user/register',
-        component: './user/register',
-      },
+      // {
+      //   name: 'register',
+      //   icon: 'smile',
+      //   path: '/user/register',
+      //   component: './user/register',
+      // },
       {
         component: '404',
       },
@@ -42,12 +42,12 @@ export default [
     path: '/houseSummary/houseDetail',
     component: './house-summary/views/house-detail',
   },
-  {
-    path: '/userRegister',
-    name: 'register',
-    icon: 'userAdd',
-    component: './user-register/views/index',
-  },
+  // {
+  //   path: '/userRegister',
+  //   name: 'register',
+  //   icon: 'userAdd',
+  //   component: './user-register/views/index',
+  // },
   {
     path: '/dashboard',
     name: 'dashboard',

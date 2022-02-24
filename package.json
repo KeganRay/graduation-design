@@ -78,6 +78,7 @@
     "react-dom": "^17.0.0",
     "react-fittext": "^1.0.0",
     "react-helmet-async": "^1.0.4",
+    "react-redux": "^7.2.6",
     "react-router": "^4.3.1",
     "umi": "3.5",
     "umi-serve": "^1.9.10"
@@ -105,7 +106,8 @@
     "cross-port-killer": "^1.1.1",
     "detect-installer": "^1.0.1",
     "enzyme": "^3.11.0",
-    "eslint": "^7.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.28.0",
     "express": "^4.17.1",
     "gh-pages": "^3.0.0",
     "jsdom-global": "^3.0.2",
