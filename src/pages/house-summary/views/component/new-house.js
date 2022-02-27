@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Card, Result, Button, Descriptions, Divider, Alert, Statistic } from 'antd';
+import { Card, Result, Button, Descriptions, Divider, Alert, Statistic,message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProForm, {
   ProFormUploadButton,
@@ -19,14 +19,13 @@ const StepResult = (props) => {
   return (
     <Result
       status='success'
-      title='操作成功'
-      subTitle='预计两小时内到账'
+      title='添加房源成功'
+      subTitle='请用户登录系统查看'
       extra={
         <>
-          <Button type='primary' onClick={props.onFinish}>
-            再转一笔
+          <Button type='primary' onClick={()=>{history.push('/houseSummary')}}>
+            完成
           </Button>
-          <Button>查看账单</Button>
         </>
       }
       className={styles.result}
@@ -266,9 +265,18 @@ const StepForm = () => {
                   landlordPhone: phone,
                   landlordId: userId,
                 };
-                services.createHouse(param)
-                console.log('数据', param);
-                return true;
+                return true
+                // services.createHouse(param).then((res)=>{
+                //   if(res && res.data.code===0){
+                //     message.success(res.data.message,2,()=>{
+                //       return true;
+                //     })
+                //   }else{
+                //     message.error(res.data.message,2,()=>{
+                //       return false;
+                //     })
+                //   }
+                // })
               }
             }}
           >

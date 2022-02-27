@@ -8,6 +8,7 @@ import * as services from '@/pages/list/card-list/service';
 const { Paragraph } = Typography;
 import { history, useModel } from 'umi';
 import { queryHouseList } from '@/pages/list/card-list/service';
+import noDataLogo from '../../../../public/image/noData.jpg'
 
 const Index = () => {
   //状态
@@ -76,7 +77,7 @@ const Index = () => {
             xl: 4,
             xxl: 4,
           }}
-          dataSource={list ? list : []}
+          dataSource={[{}, ...list]}
           renderItem={(item) => {
             if (item && item.houseId) {
               return (
@@ -84,11 +85,11 @@ const Index = () => {
                   <Card
                     hoverable
                     className={style.card}
-                    actions={[<a key='option1'>操作一</a>, <a key='option2'>操作二</a>]}
+                    actions={[<a key='option1'>房子详情</a>, <a key='option2'>发布公告</a>]}
                   >
                     <Card.Meta
-                      avatar={<img alt='' className={style.cardAvatar} src={item.housePic[0].thumbUrl} />}
-                      title={<a>{item.houseName}</a>}
+                      avatar={<img alt='' className={style.cardAvatar} src={item?.housePic[0]?.thumbUrl || noDataLogo} />}
+                      title={<a style={{ fontSize: '22px', fontWeight: 'bold' }}>{item?.houseName || ''}</a>}
                       description={
                         <Paragraph
                           className={style.item}
@@ -97,11 +98,11 @@ const Index = () => {
                           }}
                         >
                           <div className={style.tenantMessage}>
-                            房屋地址：{item.houseAddress}
+                            房屋地址：{item.houseAddress || ''}
                           </div>
                           <div className={style.item}>
-                            <div className={style.tenantMessage}>租客：{item.tenantMessage.tenantName}</div>
-                            <div>联系电话：{item.tenantMessage.tenantPhone}</div>
+                            <div className={style.tenantMessage}>租客：{item.tenantMessage.tenantName || ''}</div>
+                            <div>联系电话：{item.tenantMessage.tenantPhone || ''}</div>
                           </div>
                         </Paragraph>
                       }
