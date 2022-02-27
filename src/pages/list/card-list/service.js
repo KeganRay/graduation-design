@@ -4,3 +4,7 @@ export async function queryFakeList(params) {
     params,
   });
 }
+
+export async function queryHouseList(userId){
+  return request(`/api/house/queryUserHouseList?userId=${userId}`);
+}

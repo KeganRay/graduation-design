@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'antd';
-import { sendtest } from '../services/services';
+import { sendtest } from '../../services/services';
 
 class HouseDetail extends Component {
   constructor(props) {

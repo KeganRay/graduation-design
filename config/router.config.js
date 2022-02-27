@@ -40,14 +40,12 @@ export default [
   //房子详情页
   {
     path: '/houseSummary/houseDetail',
-    component: './house-summary/views/house-detail',
+    component: './house-summary/views/component/house-detail',
   },
-  // {
-  //   path: '/userRegister',
-  //   name: 'register',
-  //   icon: 'userAdd',
-  //   component: './user-register/views/index',
-  // },
+  {
+    path: '/new-house',
+    component: './house-summary/views/component/new-house',
+  },
   {
     path: '/dashboard',
     name: 'dashboard',

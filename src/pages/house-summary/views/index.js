@@ -1,47 +1,52 @@
-import React, {  useEffect, useState } from 'react';
-import {  Card, Typography, List, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Typography, List, Button } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import { PlusOutlined } from '@ant-design/icons';
 import style from './index.less';
 import * as services from '@/pages/list/card-list/service';
+
 const { Paragraph } = Typography;
-import { history } from 'umi';
+import { history, useModel } from 'umi';
+import { queryHouseList } from '@/pages/list/card-list/service';
 
 const Index = () => {
   //状态
   const [list, setList] = useState([]); //展示列表数组
+  const { initialState, setInitialState } = useModel('@@initialState'); //用于全局管理登陆者信息
 
   //componentDidMount
   useEffect(() => {
-    services.queryFakeList({ count: 10 }).then((res) => {
-      console.log(res);
-      const list = res?.data?.list || [];
-      setList(list);
-    });
+    const { userId } = initialState.currentUser;
+    if (userId) {
+      services.queryHouseList(userId).then((res) => {
+        console.log('数组列表', res);
+        const list = res?.data || [];
+        setList(list);
+      });
+    }
   }, []);
 
   const handleNewHouse = () => {
-    history.push('/');
+    history.push('/new-house');
   };
 
   //头顶的文章
   const content = (
     <div className={style.pageHeaderContent}>
       <p>
-        段落示意：蚂蚁金服务设计平台 ant.design，用最小的工作量，无缝接入蚂蚁金服生态，
-        提供跨越设计与开发的体验解决方案。
+        利用此系统管理您的房源，用最小的时间收获最大的效益，以下就是您名下注册的房产
       </p>
       <div className={style.contentLink}>
         <a>
-          <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg" />{' '}
+          <img alt='' src='https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg' />{' '}
           快速开始
         </a>
         <a>
-          <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/NbuDUAuBlIApFuDvWiND.svg" />{' '}
+          <img alt='' src='https://gw.alipayobjects.com/zos/rmsportal/NbuDUAuBlIApFuDvWiND.svg' />{' '}
           产品简介
         </a>
         <a>
-          <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg" />{' '}
+          <img alt='' src='https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg' />{' '}
           产品文档
         </a>
       </div>
@@ -50,8 +55,8 @@ const Index = () => {
   const extraContent = (
     <div className={style.extraImg}>
       <img
-        alt="这是一个标题"
-        src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png"
+        alt='这是一个标题'
+        src='https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png'
       />
     </div>
   );
@@ -61,7 +66,7 @@ const Index = () => {
     <PageContainer content={content} extraContent={extraContent}>
       <div className={style.cardList}>
         <List
-          rowKey="id"
+          rowKey='id'
           grid={{
             gutter: 16,
             xs: 1,
@@ -73,17 +78,17 @@ const Index = () => {
           }}
           dataSource={list ? list : []}
           renderItem={(item) => {
-            if (item && item.id) {
+            if (item && item.houseId) {
               return (
-                <List.Item key={item.id}>
+                <List.Item key={item.houseId}>
                   <Card
                     hoverable
                     className={style.card}
-                    actions={[<a key="option1">操作一</a>, <a key="option2">操作二</a>]}
+                    actions={[<a key='option1'>操作一</a>, <a key='option2'>操作二</a>]}
                   >
                     <Card.Meta
-                      avatar={<img alt="" className={style.cardAvatar} src={item.avatar} />}
-                      title={<a>{item.title}</a>}
+                      avatar={<img alt='' className={style.cardAvatar} src={item.housePic[0].thumbUrl} />}
+                      title={<a>{item.houseName}</a>}
                       description={
                         <Paragraph
                           className={style.item}
@@ -91,7 +96,13 @@ const Index = () => {
                             rows: 3,
                           }}
                         >
-                          {item.description}
+                          <div className={style.tenantMessage}>
+                            房屋地址：{item.houseAddress}
+                          </div>
+                          <div className={style.item}>
+                            <div className={style.tenantMessage}>租客：{item.tenantMessage.tenantName}</div>
+                            <div>联系电话：{item.tenantMessage.tenantPhone}</div>
+                          </div>
                         </Paragraph>
                       }
                     />
@@ -99,10 +110,9 @@ const Index = () => {
                 </List.Item>
               );
             }
-
             return (
               <List.Item>
-                <Button type="dashed" className={style.newButton} onClick={handleNewHouse}>
+                <Button type='dashed' className={style.newButton} onClick={handleNewHouse}>
                   <PlusOutlined /> 新增产品
                 </Button>
               </List.Item>

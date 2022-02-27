@@ -32,6 +32,7 @@ const Login = (props) => {
   let registerRef = null; //子节点标签
   const { initialState, setInitialState } = useModel('@@initialState'); //用于全局管理登陆者信息
   const intl = useIntl();
+  const { status, type: loginType } = userLoginState;
 
   const fetchUserInfo = async (userMsg) => {
     console.log(userMsg.data);
@@ -56,6 +57,7 @@ const Login = (props) => {
       unreadCount: 11,
       country: 'China',
       access: 'admin',
+      //phone:'17353030913'
       // geographic: {
       //   province: {
       //     label: '浙江省',
@@ -79,17 +81,24 @@ const Login = (props) => {
   const handleSubmit = async (values) => {
     // try {
     // 登录
-    const msg = await services.login(values).then(async (res) => {
-      console.log('登录请求', res);
+    await services.login(values).then(async (res) => {
       const msg = res.data;
       if (msg.code === 0) {
+        console.log('用户信息：',msg.data);
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
         });
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo(msg);
-        history.push('/');
+        //房东
+        if(msg.data.userType===1){
+          history.push('/houseSummary');
+        }else if(msg.data.userType===2){//租客
+          history.push('/houseSummary')
+        }else if(msg.data.userType===0){//超管
+          history.push('/houseSummary')
+        }
       } else if (msg.code === -1) {
         message.error('请检查账号密码');
       }
@@ -103,7 +112,7 @@ const Login = (props) => {
       registerRef.handleRegister(); //调用处弹框
     }
   };
-  const { status, type: loginType } = userLoginState;
+
 
   return (
     <div className={styles.container}>
