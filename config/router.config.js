@@ -39,7 +39,7 @@ export default [
   },
   //房子详情页
   {
-    path: '/houseSummary/houseDetail',
+    path: '/house-detail',
     component: './house-summary/views/component/house-detail',
   },
   {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Card, Result, Button, Descriptions, Divider, Alert, Statistic,message } from 'antd';
+import { Card, Result, Button, Descriptions, Divider, Alert, Statistic, message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProForm, {
   ProFormUploadButton,
@@ -10,7 +10,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import styles from './style.less';
 import addressData from '../../../../../public/addressData';
-import { useModel } from 'umi';
+import { useModel, history } from 'umi';
 import * as services from '../../services/services';
 
 const widthData = '750px';
@@ -23,7 +23,12 @@ const StepResult = (props) => {
       subTitle='请用户登录系统查看'
       extra={
         <>
-          <Button type='primary' onClick={()=>{history.push('/houseSummary')}}>
+          <Button type='primary' onClick={props.onFinish}>
+            再转一笔
+          </Button>
+          <Button type='primary' onClick={() => {
+            history.push('/houseSummary');
+          }}>
             完成
           </Button>
         </>
@@ -93,6 +98,9 @@ const StepForm = () => {
     //头顶信息
     <PageContainer content='注册房源：请填写房源信息以及租客信息'>
       <Card bordered={false}>
+        <Button style={{ float: 'right' }} onClick={() => {
+          history.push('/houseSummary');
+        }}>返回</Button>
         <StepsForm
           current={current}
           onCurrentChange={setCurrent}
@@ -265,18 +273,19 @@ const StepForm = () => {
                   landlordPhone: phone,
                   landlordId: userId,
                 };
-                return true
-                // services.createHouse(param).then((res)=>{
-                //   if(res && res.data.code===0){
-                //     message.success(res.data.message,2,()=>{
-                //       return true;
-                //     })
-                //   }else{
-                //     message.error(res.data.message,2,()=>{
-                //       return false;
-                //     })
-                //   }
-                // })
+                let createResult = null;
+                await services.createHouse(param).then((res) => {
+                  if (res && res.data.code === 0) {
+                    message.success(res.data.message, 2);
+                    createResult = true;
+                  } else {
+                    message.error(res.data.message, 2);
+                    createResult = false;
+                  }
+                });
+                if (createResult) {
+                  return true;
+                }
               }
             }}
           >
@@ -365,14 +374,12 @@ const StepForm = () => {
           }}
         />
         <div className={styles.desc}>
-          <h3>说明</h3>
-          <h4>转账到支付宝账户</h4>
+          <h3 style={{ fontWeight: 'bold' }}>说明</h3>
           <p>
-            如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
+            房源的添加必须如实填写个人信息，不能填写昵称或者其他名字，否则无法进行房源绑定。
           </p>
-          <h4>转账到银行卡</h4>
           <p>
-            如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
+            请如实核对房源信息再进行信息的填写，谢谢。
           </p>
         </div>
       </Card>
