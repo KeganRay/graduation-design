@@ -2,11 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Card, Result, Button, Descriptions, Divider, Alert, Statistic, message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProForm, {
+  ProFormDatePicker,
   ProFormUploadButton,
   ProFormDigit,
   ProFormCascader,
   ProFormText,
-  StepsForm,
+  StepsForm, ProFormDateRangePicker,
 } from '@ant-design/pro-form';
 import styles from './style.less';
 import addressData from '../../../../../public/addressData';
@@ -167,7 +168,7 @@ const StepForm = () => {
             </ProForm.Group>
 
             <ProFormDigit
-              label='租金'
+              label='租金（月）'
               name='housePrice'
               width={widthData}
               rules={[
@@ -184,6 +185,17 @@ const StepForm = () => {
               fieldProps={{
                 prefix: '￥',
               }}
+            />
+
+            <ProFormDateRangePicker
+              label='签约时间'
+              width={widthData}
+              name='contractTime'
+              rules={[
+                {
+                  required: true,
+                  message: '请选择签约时间',
+                }]}
             />
 
             <ProForm.Group>

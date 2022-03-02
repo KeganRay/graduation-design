@@ -146,8 +146,8 @@ class Register extends Component {
             <Form.Item label='邮箱' name={'email'} rules={[{ required: false }]}>
               <Input placeholder='请填写邮箱' addonAfter={selectAfter} />
             </Form.Item>
-            <Form.Item label='户籍地址' name={'registrationAddress'} rules={[{ required: false }]}>
-              <Input placeholder='请填写户籍地址' />
+            <Form.Item label='联系地址' name={'ContactAddress'} rules={[{ required: false }]}>
+              <Input placeholder='请填写联系地址' />
             </Form.Item>
             <Form.Item label='用户类型' name={'userType'} rules={[{ required: true, message: '请选择用户类型' }]}>
               <Radio.Group placeholder='请选择用户类型'>

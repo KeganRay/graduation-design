@@ -35,7 +35,6 @@ const Login = (props) => {
   const { status, type: loginType } = userLoginState;
 
   const fetchUserInfo = async (userMsg) => {
-    console.log(userMsg.data);
     // const userInfo = await initialState?.fetchUserInfo?.();
     const userInfo = {
       ...userMsg.data,
@@ -70,7 +69,6 @@ const Login = (props) => {
       // },
       // address: '西湖区工专路 77 号',
     };
-    console.log('user:', userInfo);
     if (userInfo) {
       await setInitialState((s) => {
         return { ...s, currentUser: userInfo };
