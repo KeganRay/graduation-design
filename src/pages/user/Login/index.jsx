@@ -56,7 +56,7 @@ const Login = (props) => {
       unreadCount: 11,
       country: 'China',
       access: 'admin',
-      //phone:'17353030913'
+      // phone:17353030913
       // geographic: {
       //   province: {
       //     label: '浙江省',
