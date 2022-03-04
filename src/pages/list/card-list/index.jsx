@@ -2,7 +2,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, List, Typography } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import { useRequest } from 'umi';
-import { queryFakeList } from './service';
+// import { queryFakeList } from './service';
 import styles from './style.less';
 const { Paragraph } = Typography;
 

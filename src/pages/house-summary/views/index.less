@@ -4,6 +4,9 @@
 .cardList {
   .card {
     :global {
+      .ant-card-meta-description{
+        font-size: 15px;
+      }
       .ant-card-meta-title {
         margin-bottom: 12px;
         & > a {
@@ -18,11 +21,16 @@
         }
       }
     }
+    .del:hover{
+      color:red;
+    }
   }
+
   .item {
     height: 84px;
   }
-  .tenantMessage{
+
+  .tenantMessage {
     margin-bottom: 6px;
   }
 
@@ -37,6 +45,7 @@
   width: 155px;
   margin-top: -20px;
   text-align: center;
+
   img {
     width: 100%;
   }
@@ -67,12 +76,15 @@
 
 .contentLink {
   margin-top: 16px;
+
   a {
     margin-right: 32px;
+
     img {
       width: 24px;
     }
   }
+
   img {
     margin-right: 8px;
     vertical-align: middle;
@@ -86,6 +98,7 @@
     }
   }
 }
+
 @media screen and (max-width: @screen-md) {
   .extraImg {
     display: none;
@@ -96,14 +109,17 @@
   .pageHeaderContent {
     padding-bottom: 30px;
   }
+
   .contentLink {
     position: absolute;
     bottom: -4px;
     left: 0;
     width: 1000px;
+
     a {
       margin-right: 16px;
     }
+
     img {
       margin-right: 4px;
     }

@@ -4,6 +4,7 @@ import {
   EllipsisOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons';
+import moment from 'moment';
 import {
   Badge,
   Button,
@@ -13,24 +14,25 @@ import {
   Dropdown,
   Menu,
   Popover,
-  Steps,
+  Modal,
   Table,
   Image,
   Empty,
+  Form,
+  DatePicker,
+  Divider,
+  Input,
+  InputNumber,
 } from 'antd';
 import { GridContent, PageContainer, RouteContext } from '@ant-design/pro-layout';
-import React, { Fragment, Suspense, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useRequest, history } from 'umi';
 import { queryAdvancedProfile } from '../../../profile/advanced/service';
 import styles from './house-detail.less';
 import * as services from '../../services/services';
-import { queryByhouseId, queryByIdCardNumber } from '../../services/services';
-import SalesCard from '@/pages/dashboard/analysis/components/SalesCard';
-import { getTimeDistance } from '@/pages/dashboard/analysis/utils/utils';
-import { fakeChartData } from '@/pages/dashboard/analysis/service';
+import WaterEle from '../component/WaterEle';
 
-const { Step } = Steps;
 const ButtonGroup = Button.Group;
 const menu = (
   <Menu>
@@ -67,8 +69,8 @@ const action = (
       return (
         <Fragment>
           <ButtonGroup>
-            <Button>操作一</Button>
-            <Button>操作二</Button>
+            <Button>水电费标准</Button>
+            <Button>发布公告</Button>
             <Dropdown overlay={menu} placement='bottomRight'>
               <Button>
                 <EllipsisOutlined />
@@ -217,7 +219,9 @@ const houseDetail = () => {
     tabActiveKey: 'houseDetail',//头顶tab页的默认值
     operationKey: 'tab2',//下面操作日志的默认值
   });
-
+  const [isShowWE, setisShowWE] = useState(false);//设置是否显示设置水电的弹窗
+  const [currentMonth, setCurrentMonth] = useState(moment().format('YYYY-MM'));
+  const [weType, setWeType] = useState('');
   //componentDidmount
   useEffect(() => {
     const { houseId } = history.location.query;
@@ -237,38 +241,22 @@ const houseDetail = () => {
 
   const { data = {}, loading } = useRequest(queryAdvancedProfile);
   const { advancedOperation1, advancedOperation2, advancedOperation3 } = data;
-
-  const [rangePickerValue, setRangePickerValue] = useState(getTimeDistance('year'));
-  const isActive = (type) => {
-    if (!rangePickerValue) {
-      return '';
-    }
-
-    const value = getTimeDistance(type);
-
-    if (!value) {
-      return '';
-    }
-
-    if (!rangePickerValue[0] || !rangePickerValue[1]) {
-      return '';
-    }
-
-    if (
-      rangePickerValue[0].isSame(value[0], 'day') &&
-      rangePickerValue[1].isSame(value[1], 'day')
-    ) {
-      return styles.currentDate;
-    }
-
-    return '';
+  const onTabChange = (tabActiveKey) => {
+    console.log(tabStatus, tabActiveKey);
+    seTabStatus({ ...tabStatus, tabActiveKey });
   };
-  const handleRangePickerChange = (value) => {
-    setRangePickerValue(value);
+
+  const onOperationTabChange = (key) => {
+    seTabStatus({ ...tabStatus, operationKey: key });
   };
-  const { loading1, data1 } = useRequest(fakeChartData);
-  const selectDate = (type) => {
-    setRangePickerValue(getTimeDistance(type));
+
+  const showModal = (type) => {
+    setisShowWE(true);
+    setWeType(type);
+  };
+
+  const onMonthChant = (value) => {
+    setCurrentMonth(value.format('YYYY-MM'));
   };
 
   const contentList = {
@@ -294,35 +282,30 @@ const houseDetail = () => {
   };
 
 
-  const onTabChange = (tabActiveKey) => {
-    console.log(tabStatus, tabActiveKey);
-    seTabStatus({ ...tabStatus, tabActiveKey });
-  };
-
-  const onOperationTabChange = (key) => {
-    seTabStatus({ ...tabStatus, operationKey: key });
-  };
-
   // 头顶顶部描述
   const description = (
     <RouteContext.Consumer>
       {({ isMobile }) => {
-        const { tenantMessage, contractTime, houseAddress, houseAddressDetail, houseArea } = houseData;
-        // console.log(houseData);
+        const { tenantMessage, contractTime, houseAddress, houseAddressDetail, houseArea, housePic } = houseData;
         return (
-          <Descriptions className={styles.headerList} size='small' column={isMobile ? 1 : 2}>
-            <Descriptions.Item
-              label='租客'>{tenantMessage?.tenantName ? tenantMessage.tenantName : ''}</Descriptions.Item>
-            <Descriptions.Item
-              label='租客联系电话'>{tenantMessage?.tenantPhone ? tenantMessage.tenantPhone : ''}</Descriptions.Item>
-            <Descriptions.Item label='房屋起租日期'>{contractTime ? contractTime[0] : ''}</Descriptions.Item>
-            <Descriptions.Item label='房屋详细地址'>
-              {`${houseAddress}${houseAddressDetail}` || ''}
-            </Descriptions.Item>
-            <Descriptions.Item
-              label='合同生效日期'>{contractTime ? `${contractTime[0]}  ~  ${contractTime[1]}` : ''}</Descriptions.Item>
-            <Descriptions.Item label='房屋大小'>{houseArea ? houseArea : ''} m²</Descriptions.Item>
-          </Descriptions>
+          <div>
+            <Descriptions className={styles.headerList} size='small' column={isMobile ? 1 : 2}>
+              <Descriptions.Item
+                label='租客'>{tenantMessage?.tenantName ? tenantMessage.tenantName : ''}</Descriptions.Item>
+              <Descriptions.Item
+                label='租客联系电话'>{tenantMessage?.tenantPhone ? tenantMessage.tenantPhone : ''}</Descriptions.Item>
+              <Descriptions.Item label='房屋起租日期'>{contractTime ? contractTime[0] : ''}</Descriptions.Item>
+              <Descriptions.Item label='房屋详细地址'>
+                {`${houseAddress}${houseAddressDetail}` || ''}
+              </Descriptions.Item>
+              <Descriptions.Item
+                label='合同生效日期'>{contractTime ? `${contractTime[0]}  ~  ${contractTime[1]}` : ''}</Descriptions.Item>
+              <Descriptions.Item label='房屋大小'>{houseArea ? houseArea : ''} m²</Descriptions.Item>
+            </Descriptions>
+            <div className={styles.avatarHolder}>
+              <img alt='' src={housePic && housePic[0] && housePic[0].thumbUrl ? housePic[0].thumbUrl : ''} />
+            </div>
+          </div>
         );
       }}
     </RouteContext.Consumer>
@@ -336,21 +319,6 @@ const houseDetail = () => {
     </div>
   );
 
-  const onPreview = async (file)=>{
-    let src = file.url;
-    if (!src) {
-      src = await new Promise(resolve => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow.document.write(image.outerHTML);
-  }
-
   const showhousePic = {
     empty: <Empty />,
     houselist: <div>
@@ -360,14 +328,14 @@ const houseDetail = () => {
             width={200}
             key={item.name}
             src={item.thumbUrl}
-            // onPreview={onPreview(item)}
           />
         );
       }) : ''}
     </div>,
-  }
+  };
 
   const mainContentList = {
+
     houseDetail: (
       <GridContent>
         <Card
@@ -384,16 +352,40 @@ const houseDetail = () => {
           >
             <Descriptions.Item label='租客姓名'>{tenantMessage?.name || ''}</Descriptions.Item>
             <Descriptions.Item
-              label='租客性别'>{tenantMessage.sex ? tenantMessage.sex === 1 ? '男' : tenantMessage.sex === 0 ? '女' : '' : ''}</Descriptions.Item>
-            <Descriptions.Item label='年龄'>{tenantMessage.age || ''} 岁</Descriptions.Item>
-            <Descriptions.Item label='身份证'>{tenantMessage.IDcardNumber || ''}</Descriptions.Item>
-            <Descriptions.Item label='联系方式'>{tenantMessage.phone || ''}</Descriptions.Item>
-            <Descriptions.Item label='电子邮箱'>{tenantMessage.email || ''}</Descriptions.Item>
+              label='租客性别'>{tenantMessage && tenantMessage.sex ? tenantMessage.sex === 1 ? '男' : tenantMessage.sex === 0 ? '女' : '' : ''}</Descriptions.Item>
+            <Descriptions.Item
+              label='年龄'>{tenantMessage && tenantMessage.age ? tenantMessage.age : ''} 岁</Descriptions.Item>
+            <Descriptions.Item
+              label='身份证'>{tenantMessage && tenantMessage.IDcardNumber ? tenantMessage.IDcardNumber : ''}</Descriptions.Item>
+            <Descriptions.Item
+              label='联系方式'>{tenantMessage && tenantMessage.phone ? tenantMessage.phone : ''}</Descriptions.Item>
+            <Descriptions.Item
+              label='电子邮箱'>{tenantMessage && tenantMessage.email ? tenantMessage.email : ''}</Descriptions.Item>
             <Descriptions.Item label='联系地址'>
-              {tenantMessage.registrationAddress || ''}
+              {tenantMessage && tenantMessage.registrationAddress ? tenantMessage.registrationAddress : ''}
             </Descriptions.Item>
           </Descriptions>
         </Card>
+
+        <Card
+          title='水费电费信息'
+          style={{
+            marginBottom: 24,
+          }}
+          bordered={false}
+          extra={
+            <div>
+              <Button type='primary' onClick={() => {
+                showModal('water');
+              }}>添加水费信息</Button>
+              <Button onClick={() => {
+                showModal('electricity');
+              }} style={{ marginLeft: '20px' }}>添加电费信息</Button>
+            </div>}
+        >
+          <WaterEle></WaterEle>
+        </Card>
+
         <Card
           title='其他材料'
           style={{
@@ -412,56 +404,85 @@ const houseDetail = () => {
         >
           {contentList[tabStatus.operationKey]}
         </Card>
-      </GridContent>
-    ),
-    waterElectricity: (
-      <GridContent>
-        <Card
-          title='租客信息'
-          style={{
-            marginBottom: 24,
+        <Modal
+          title={'填写水电使用情况'}
+          width={'50%'}
+          visible={isShowWE}
+          onCancel={() => {
+            setisShowWE(false);
           }}
-          bordered={false}
+          footer={null}
         >
-          <SalesCard
-            rangePickerValue={rangePickerValue}
-            salesData={data1?.salesData || []}
-            isActive={isActive}
-            handleRangePickerChange={handleRangePickerChange}
-            loading={loading1}
-            selectDate={selectDate}
-          />
-        </Card>
+          <Form
+            onFinish={(values) => {
+              console.log(values);
+
+              // console.log(values.month.format('YYYY-MM'));
+            }}
+          >
+            <Form.Item
+              label='月份'
+              name='month'
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 20 }}
+            >
+              <DatePicker onChange={onMonthChant} picker='month' style={{ width: '50%' }} />
+            </Form.Item>
+            {
+              weType === 'water' ? (
+                <Form.Item
+                  label='水费'
+                  name='WaterNum'
+                  labelCol={{ span: 8 }}
+                  wrapperCol={{ span: 20 }}
+                >
+                  <InputNumber style={{ width: '50%' }} addonAfter={'/吨'} />
+                </Form.Item>
+              ) : weType === 'electricity' ? <Form.Item
+                label='电费'
+                name='electricityNum'
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 20 }}
+              >
+                <InputNumber style={{ width: '50%' }} addonAfter={'/度'} />
+              </Form.Item> : ''
+            }
+            <Divider style={{ margin: '12px 0' }} />
+            <div className={styles.modalfooter}>
+              <Button>取消</Button>
+              <Button type='primary' htmlType='submit' style={{ marginLeft: '20px' }}>添加</Button>
+            </div>
+          </Form>
+        </Modal>
       </GridContent>
     ),
   };
 
   const { houseName } = houseData;
   return (
-    <PageContainer
-      title={houseName || ''}
-      extra={action}//右边的操作
-      className={styles.pageHeader}
-      content={description}
-      extraContent={extra}
-      tabActiveKey={tabStatus.tabActiveKey}
-      onTabChange={onTabChange}
-      tabList={[
-        {
-          key: 'houseDetail',
-          tab: '房屋详情',
-        },
-        {
-          key: 'waterElectricity',
-          tab: '水电费',
-        },
-      ]}
-    >
-      <div className={styles.main}>
-        {mainContentList[tabStatus.tabActiveKey]}
-      </div>
-    </PageContainer>
-  );
+    <div className={styles.container}>
+      <PageContainer
+        title={houseName || ''}
+        extra={action}//右边的操作
+        className={styles.pageHeader}
+        content={description}
+        extraContent={extra}
+        tabActiveKey={tabStatus.tabActiveKey}
+        onTabChange={onTabChange}
+        tabList={[
+          {
+            key: 'houseDetail',
+            tab: '房屋详情',
+          },
+        ]}
+      >
+        <div className={styles.main}>
+          {mainContentList[tabStatus.tabActiveKey]}
+        </div>
+      </PageContainer>
+    </div>
+  )
+    ;
 };
 
 export default houseDetail;

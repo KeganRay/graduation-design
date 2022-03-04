@@ -25,7 +25,7 @@ const StepResult = (props) => {
       extra={
         <>
           <Button type='primary' onClick={props.onFinish}>
-            再转一笔
+            再添加一个
           </Button>
           <Button type='primary' onClick={() => {
             history.push('/houseSummary');
@@ -55,20 +55,24 @@ const StepForm = () => {
    * @date 2022--06-27
    */
   const handleAddressChange = (value) => {
-    const provinceCode = value[0];//省
-    const cityCode = value[1];//市
-    const areaCode = value[2];//区
-    const province = addressData.filter((target) => {
-      return target.value === provinceCode;
-    })[0];
-    const city = province.children.filter((target) => {
-      return target.value === cityCode;
-    })[0];
-    const area = city.children.filter((target) => {
-      return target.value === areaCode;
-    })[0];
-    if (province && city && area) {
-      setAddress(`${province.label}${city.label}${area.label}`);
+    if (value) {
+      console.log(value);
+      const provinceCode = value[0];//省
+      const cityCode = value[1];//市
+      const areaCode = value[2];//区
+      console.log(provinceCode, cityCode, areaCode);
+      const province = addressData.filter((target) => {
+        return target.value === provinceCode;
+      })[0];
+      const city = province.children.filter((target) => {
+        return target.value === cityCode;
+      })[0];
+      const area = city.children.filter((target) => {
+        return target.value === areaCode;
+      })[0];
+      if (province && city && area) {
+        setAddress(`${province.label}${city.label}${area.label}`);
+      }
     }
   };
 
@@ -141,7 +145,7 @@ const StepForm = () => {
               <ProFormCascader
                 width={'sm'}
                 name='houseEasyAddress'
-                fieldProps={{ options: addressData, onChange: handleAddressChange }}
+                fieldProps={{ options: addressData, onChange: handleAddressChange}}
                 rules={[
                   {
                     required: true,

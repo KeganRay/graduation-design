@@ -1,60 +1,101 @@
 @import '~antd/es/style/themes/default.less';
 
-.main {
+.container {
   :global {
-    .ant-descriptions-row > td {
-      padding-bottom: 8px;
+    .ant-page-header-content {
+      margin-bottom: 0;
     }
-    .ant-page-header-heading-extra {
-      flex-direction: column;
-    }
-  }
-}
 
-.headerList {
-  margin-bottom: 4px;
-  :global {
-    .ant-descriptions-row > td {
-      padding-bottom: 8px;
+    .ant-page-header-heading-left {
+      margin-left: 200px;
+    }
+
+    .ant-pro-page-container-row {
+      padding-top: 0;
     }
   }
 
-  .stepDescription {
-    position: relative;
-    left: 38px;
-    padding-top: 8px;
-    font-size: 14px;
-    text-align: left;
-
-    > div {
-      margin-top: 8px;
-      margin-bottom: 4px;
-    }
-  }
-}
-
-.pageHeader {
-  :global {
-    .ant-page-header-heading-extra > * + * {
-      margin-left: 8px;
-    }
-  }
-  .moreInfo {
-    display: flex;
-    justify-content: space-between;
-    width: 200px;
-  }
-}
-
-@media screen and (max-width: @screen-sm) {
-  .stepDescription {
-    left: 8px;
-  }
-  .pageHeader {
+  .main {
     :global {
-      .ant-pro-page-header-wrap-row {
+      .ant-descriptions-row > td {
+        padding-bottom: 8px;
+      }
+
+      .ant-page-header-heading-extra {
         flex-direction: column;
       }
     }
   }
+
+  .avatarHolder {
+    border-radius: 30px;
+
+    img {
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      margin-bottom: 20px;
+      position: absolute;
+      top: 7%;
+      left: 2%;
+    }
+  }
+
+  .headerList {
+    margin-left: 200px;
+    margin-bottom: 4px;
+
+    :global {
+      .ant-descriptions-row > td {
+        padding-bottom: 8px;
+      }
+    }
+
+    .stepDescription {
+      position: relative;
+      left: 38px;
+      padding-top: 8px;
+      font-size: 14px;
+      text-align: left;
+
+      > div {
+        margin-top: 8px;
+        margin-bottom: 4px;
+      }
+    }
+  }
+
+  .pageHeader {
+    :global {
+      .ant-page-header-heading-extra > * + * {
+        margin-left: 8px;
+      }
+    }
+
+    .moreInfo {
+      display: flex;
+      justify-content: space-between;
+      width: 200px;
+    }
+  }
+
+  @media screen and (max-width: @screen-sm) {
+    .stepDescription {
+      left: 8px;
+    }
+
+    .pageHeader {
+      :global {
+        .ant-pro-page-header-wrap-row {
+          flex-direction: column;
+        }
+      }
+    }
+  }
 }
+
+.modalfooter {
+  display: flex;
+  justify-content: end;
+}
+
