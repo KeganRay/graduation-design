@@ -205,7 +205,7 @@ const StepForm = () => {
             <ProForm.Group>
               <ProFormDigit
                 label='水费标准'
-                name='waterPrice'
+                name='waterUnitPrice'
                 rules={[
                   {
                     required: true,
@@ -224,7 +224,7 @@ const StepForm = () => {
               />
               <ProFormDigit
                 label='电费标准'
-                name='electricityPrice'
+                name='electricityUnitPrice'
                 rules={[
                   {
                     required: true,
