@@ -33,3 +33,9 @@ export async function submitMonthElePrice(payload){
 export async function submitWEUnit(payload){
   return axios.post('/api/house/submit-water-electricity-unit',payload)
 }
+
+//提交房屋公告
+export async function submitAnnouncement(payload){
+  return axios.post('/api/house/submit-announcement',payload)
+}
+

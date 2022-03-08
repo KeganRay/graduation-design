@@ -21,7 +21,7 @@ import {
   message,
 } from 'antd';
 import { GridContent, PageContainer, RouteContext } from '@ant-design/pro-layout';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, Fragment, useEffect, useRef, useState } from 'react';
 import currency from 'currency.js';
 import { history } from 'umi';
 import styles from './house-detail.less';
@@ -33,6 +33,7 @@ const ButtonGroup = Button.Group;
 
 const houseDetail = () => {
   const waterEleRef = useRef();
+  const announcementRef = React.createRef();
   const [houseData, setHouseData] = useState({});//房屋数据
   const [tenantMessage, setTenantMessage] = useState({});//租客数据
   const [tabStatus, seTabStatus] = useState({
@@ -43,9 +44,32 @@ const houseDetail = () => {
   const [isShowWEUnit, setisShowWEUnit] = useState(false);//设置是否显示设置水电收费标准弹窗
   const [currentMonth, setCurrentMonth] = useState(moment().format('YYYY-MM'));//当前月份的数据
   const [weType, setWeType] = useState('');//水电弹框的初始值
+  const [isShowAnnouncement, setisShowAnnouncement] = useState(false);//是否显示公告框
+
 
   //componentDidmount
   useEffect(() => {
+    refreshData();
+  }, []);
+
+  useEffect(() => {
+    //监听有没有打开公告的modal，如果有打开就能获取表单的ref进行塞值
+    if(isShowAnnouncement){
+      announcementRef.current.setFieldsValue({announcement:houseData.announcement})
+    }
+  }, [isShowAnnouncement]);
+
+  const onTabChange = (tabActiveKey) => {
+    console.log(tabStatus, tabActiveKey);
+    seTabStatus({ ...tabStatus, tabActiveKey });
+  };
+
+
+  /**
+   * @Description:刷新数据
+   * @date 2022--34-07
+   */
+  const refreshData = () => {
     const { houseId } = history.location.query;
     services.queryByhouseId(houseId).then((res) => {
       if (res.data && res.data.code === 0) {
@@ -65,13 +89,7 @@ const houseDetail = () => {
         }
       }
     });
-  }, []);
-
-  const onTabChange = (tabActiveKey) => {
-    console.log(tabStatus, tabActiveKey);
-    seTabStatus({ ...tabStatus, tabActiveKey });
   };
-
 
   /**
    * @Description:显示水电费的弹框
@@ -111,7 +129,7 @@ const houseDetail = () => {
         };
         console.log(param);
         services.submitMonthWaterPrice(param).then((res) => {
-          if (res.data.status === 0) {
+          if (res.data.code === 0) {
             message.success('添加水费数据成功', 1, () => {
               setisShowWE(false);
               //重新调用接口查询水电数据，更新组组件的数据
@@ -175,12 +193,34 @@ const houseDetail = () => {
       services.submitWEUnit(param).then((res) => {
         if (res.data.code === 0) {
           message.success('修改成功', 1, () => {
+            refreshData();
             setisShowWEUnit(false);
           });
         }
       });
     } else {
       message.error('请填写数据', 1);
+    }
+  };
+
+  /**
+   * @Description:公告提交的回调函数
+   * @date 2022--58-08
+   */
+  const handleAnnouncementSubmit = (value) => {
+    const param = {
+      houseId: houseData.houseId || '',
+      announcement: value.announcement,
+    };
+    if (value && value.announcement) {
+      services.submitAnnouncement(param).then((res) => {
+        if (res && res.data && res.data.code === 0) {
+          message.success(res.data.msg, 1, () => {
+            setisShowAnnouncement(false);
+            refreshData();
+          });
+        }
+      });
     }
   };
 
@@ -233,7 +273,7 @@ const houseDetail = () => {
   const extra = (
     <div className={styles.moreInfo}>
       <Statistic title='月租金' value={houseData.housePrice || ''} prefix='¥' />
-      <Statistic title='已缴纳租金' value={'666'} prefix='¥' />
+      {/*<Statistic title='已缴纳租金' value={'666'} prefix='¥' />*/}
     </div>
   );
 
@@ -269,82 +309,110 @@ const houseDetail = () => {
       <Menu.Item key=''>选项三</Menu.Item>
     </Menu>
   );
+
   const action = (
     <RouteContext.Consumer>
-      {({ isMobile }) => {
-        if (isMobile) {
-          return (
-            <Dropdown.Button
-              type='primary'
-              icon={<DownOutlined />}
-              overlay={mobileMenu}
-              placement='bottomRight'
-              onClick={() => {
-                history.push('/houseSummary');
-              }}
-            >
-              返回
-            </Dropdown.Button>
-          );
-        }
-
-        return (
-          <Fragment>
-            <ButtonGroup>
-              <Button onClick={() => {
-                setisShowWEUnit(true);
-              }}>设置水电费标准</Button>
-              <Button>发布公告</Button>
-              <Dropdown overlay={menu} placement='bottomRight'>
-                <Button>
-                  <EllipsisOutlined />
-                </Button>
-              </Dropdown>
-            </ButtonGroup>
-            <Button type='primary' onClick={() => {
-              history.push('/houseSummary');
-            }}>返回</Button>
-            <Modal
-              visible={isShowWEUnit}
-              title={'设置水电费收费标准'}
-              width={'50%'}
-              onCancel={() => {
-                setisShowWEUnit(false);
-              }}
-              footer={null}>
-              <Form
-                onFinish={handleWEUnitsubmit}
+      {
+        ({ isMobile }) => {
+          if (isMobile) {
+            return (
+              <Dropdown.Button
+                type='primary'
+                icon={<DownOutlined />}
+                overlay={mobileMenu}
+                placement='bottomRight'
+                onClick={() => {
+                  history.push('/houseSummary');
+                }}
               >
-                <Form.Item
-                  label='水费'
-                  name='waterUnit'
-                  labelCol={{ span: 6 }}
-                  wrapperCol={{ span: 18 }}
+                返回
+              </Dropdown.Button>
+            );
+          }
+
+          return (
+            <Fragment>
+              <ButtonGroup>
+                <Button onClick={() => {
+                  setisShowWEUnit(true);
+                }}>设置水电费标准</Button>
+                <Button onClick={() => {
+                  setisShowAnnouncement(true);
+                }}>发布公告</Button>
+                <Dropdown overlay={menu} placement='bottomRight'>
+                  <Button>
+                    <EllipsisOutlined />
+                  </Button>
+                </Dropdown>
+              </ButtonGroup>
+              <Button type='primary' onClick={() => {
+                history.push('/houseSummary');
+              }}>返回</Button>
+              <Modal
+                visible={isShowWEUnit}
+                title={'设置水电费收费标准'}
+                width={'50%'}
+                onCancel={() => {
+                  setisShowWEUnit(false);
+                }}
+                footer={null}>
+                <Form
+                  onFinish={handleWEUnitsubmit}
                 >
-                  <InputNumber style={{ width: '70%' }} addonAfter={'元/吨'}
-                               placeholder={`当前收费标准为：${houseData.waterUnitPrice}元/吨`} />
-                </Form.Item>
-                <Form.Item
-                  label='电费'
-                  name='eleUnit'
-                  labelCol={{ span: 6 }}
-                  wrapperCol={{ span: 18 }}
-                >
-                  <InputNumber style={{ width: '70%' }} addonAfter={'元/度'}
-                               placeholder={`当前收费标准为：${houseData.electricityUnitPrice}元/度`} />
-                </Form.Item>
-                <Divider style={{ margin: '12px 0' }} />
-                <div className={styles.modalfooter}>
-                  <Button onClick={() => {
-                    setisShowWEUnit(false);
-                  }}>取消</Button>
-                  <Button type='primary' htmlType='submit' style={{ marginLeft: '20px' }}>确定</Button>
-                </div>
-              </Form>
-            </Modal>
-          </Fragment>
-        );
-      }}
+                  <Form.Item
+                    label='水费'
+                    name='waterUnit'
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 18 }}
+                  >
+                    <InputNumber style={{ width: '70%' }} addonAfter={'元/吨'}
+                                 placeholder={`当前收费标准为：${houseData.waterUnitPrice}元/吨`} />
+                  </Form.Item>
+                  <Form.Item
+                    label='电费'
+                    name='eleUnit'
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 18 }}
+                  >
+                    <InputNumber style={{ width: '70%' }} addonAfter={'元/度'}
+                                 placeholder={`当前收费标准为：${houseData.electricityUnitPrice}元/度`} />
+                  </Form.Item>
+                  <Divider style={{ margin: '12px 0' }} />
+                  <div className={styles.modalfooter}>
+                    <Button onClick={() => {
+                      setisShowWEUnit(false);
+                    }}>取消</Button>
+                    <Button type='primary' htmlType='submit' style={{ marginLeft: '20px' }}>确定</Button>
+                  </div>
+                </Form>
+              </Modal>
+              <Modal
+                visible={isShowAnnouncement}
+                title={'设置房屋公告'}
+                width={'50%'}
+                onCancel={() => {
+                  setisShowAnnouncement(false);
+                }}
+                footer={null}>
+                <Form onFinish={handleAnnouncementSubmit} ref={announcementRef}>
+                  <Form.Item
+                    name='announcement'
+                  >
+                    <Input.TextArea style={{ width: '100%', height: '200px' }}
+                                    placeholder='请输入房屋公告...'></Input.TextArea>
+                  </Form.Item>
+                  <Divider style={{ margin: '12px 0' }} />
+                  <div className={styles.modalfooter}>
+                    <Button onClick={() => {
+                      setisShowAnnouncement(false);
+                    }}>取消</Button>
+                    <Button type='primary' htmlType='submit' style={{ marginLeft: '20px' }}>确定</Button>
+                  </div>
+                </Form>
+              </Modal>
+            </Fragment>
+          );
+        }}
     </RouteContext.Consumer>
   );
 

@@ -119,6 +119,7 @@ const WaterEle = ({ cRef }) => {
                     yAxis={{
                       visible: true,
                       title: {
+                        text:"费用",
                         visible: false,
                       },
                     }}
@@ -131,7 +132,7 @@ const WaterEle = ({ cRef }) => {
                     }}
                     meta={{
                       y: {
-                        alias: '访问量',
+                        alias: '111',
                       },
                     }}
                   />
