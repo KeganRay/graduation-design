@@ -23,17 +23,23 @@ import {
 import { GridContent, PageContainer, RouteContext } from '@ant-design/pro-layout';
 import React, { forwardRef, Fragment, useEffect, useRef, useState } from 'react';
 import currency from 'currency.js';
-import { history } from 'umi';
+import { history, useModel } from 'umi';
 import styles from './house-detail.less';
 import * as services from '../../services/services';
 import WaterEle from '../component/WaterEle';
+import { submitMessage } from '../../services/services';
 
 const ButtonGroup = Button.Group;
 
 
 const houseDetail = () => {
+  const { initialState, setInitialState } = useModel('@@initialState'); //用于全局管理登陆者信息
+
   const waterEleRef = useRef();
-  const announcementRef = React.createRef();
+  // const announcementRef = React.createRef();
+  const [announceForm] = Form.useForm();//房东的公告
+  const [messageForm] = Form.useForm();//租客的信息
+  const [istenant, setIsTenant] = useState(false);//是否是租客
   const [houseData, setHouseData] = useState({});//房屋数据
   const [tenantMessage, setTenantMessage] = useState({});//租客数据
   const [tabStatus, seTabStatus] = useState({
@@ -44,20 +50,27 @@ const houseDetail = () => {
   const [isShowWEUnit, setisShowWEUnit] = useState(false);//设置是否显示设置水电收费标准弹窗
   const [currentMonth, setCurrentMonth] = useState(moment().format('YYYY-MM'));//当前月份的数据
   const [weType, setWeType] = useState('');//水电弹框的初始值
-  const [isShowAnnouncement, setisShowAnnouncement] = useState(false);//是否显示公告框
+  const [isShowAnnouncement, setisShowAnnouncement] = useState(false);//房东的是否显示公告框
+  const [isSendMessage, setIsSendMessage] = useState(false);//租客是否显示发信息的框
 
 
   //componentDidmount
   useEffect(() => {
     refreshData();
+    const { userType } = initialState.currentUser;
+    if (userType === 1) {//房东
+      setIsTenant(false);
+    } else if (userType === 2) {//租客
+      setIsTenant(true);
+    }
   }, []);
 
-  useEffect(() => {
-    //监听有没有打开公告的modal，如果有打开就能获取表单的ref进行塞值
-    if(isShowAnnouncement){
-      announcementRef.current.setFieldsValue({announcement:houseData.announcement})
-    }
-  }, [isShowAnnouncement]);
+  // useEffect(() => {
+  //   //监听有没有打开公告的modal，如果有打开就能获取表单的ref进行塞值
+  //   if (isShowAnnouncement) {
+  //     announcementRef.current.setFieldsValue({ announcement: houseData.announcement });
+  //   }
+  // }, [isShowAnnouncement]);
 
   const onTabChange = (tabActiveKey) => {
     console.log(tabStatus, tabActiveKey);
@@ -225,6 +238,33 @@ const houseDetail = () => {
   };
 
   /**
+   * @Description:租客信息提交
+   * @date 2022--03-10
+   */
+  const handleMessageSubmit = (value) => {
+    if (value && value.tolandlordMessage) {
+      const Time = new Date().toLocaleDateString().split('/');
+      const currentTime = `${Time[0]}-${Time[1]}-${Time[2]}`;
+      const param = {
+        landlordId: houseData.landlordId || '',//房东ID
+        title: `${houseData.tenantMessage.tenantName || ''}  发来一条信息`,//标题
+        description: value.tolandlordMessage || '',//描述
+        status: 0,//新的信息状态都为1未读状态
+        noticeType: 'message',//message为租客给房东发的信息 feeInfo为缴费信息
+        date: currentTime,//时间
+      };
+      services.submitMessage(param).then((res) => {
+        if (res && res.data && res.data.code === 0) {
+          message.success(res.data.msg, 1, () => {
+            setIsSendMessage(false);
+            refreshData();
+          });
+        }
+      });
+    }
+  };
+
+  /**
    * @Description:DOM
    * @date 2022--16-05
    */
@@ -332,19 +372,24 @@ const houseDetail = () => {
 
           return (
             <Fragment>
-              <ButtonGroup>
-                <Button onClick={() => {
-                  setisShowWEUnit(true);
-                }}>设置水电费标准</Button>
-                <Button onClick={() => {
-                  setisShowAnnouncement(true);
-                }}>发布公告</Button>
-                <Dropdown overlay={menu} placement='bottomRight'>
-                  <Button>
-                    <EllipsisOutlined />
-                  </Button>
-                </Dropdown>
-              </ButtonGroup>
+              {
+                istenant ? <Button onClick={() => {
+                  setIsSendMessage(true);
+                }}>发布信息</Button> : <ButtonGroup>
+                  <Button onClick={() => {
+                    setisShowWEUnit(true);
+                  }}>设置水电费标准</Button>
+                  <Button onClick={() => {
+                    setisShowAnnouncement(true);
+                    announceForm.setFieldsValue({ announcement: houseData.announcement });
+                  }}>发布公告</Button>
+                  <Dropdown overlay={menu} placement='bottomRight'>
+                    <Button>
+                      <EllipsisOutlined />
+                    </Button>
+                  </Dropdown>
+                </ButtonGroup>
+              }
               <Button type='primary' onClick={() => {
                 history.push('/houseSummary');
               }}>返回</Button>
@@ -393,8 +438,11 @@ const houseDetail = () => {
                 onCancel={() => {
                   setisShowAnnouncement(false);
                 }}
-                footer={null}>
-                <Form onFinish={handleAnnouncementSubmit} ref={announcementRef}>
+                footer={null}
+                forceRender>
+                <Form form={announceForm} onFinish={handleAnnouncementSubmit}
+                  // ref={announcementRef}
+                >
                   <Form.Item
                     name='announcement'
                   >
@@ -410,6 +458,33 @@ const houseDetail = () => {
                   </div>
                 </Form>
               </Modal>
+              <Modal
+                visible={isSendMessage}
+                title={'给房东发点消息吧'}
+                width={'50%'}
+                onCancel={() => {
+                  setIsSendMessage(false);
+                }}
+                footer={null}
+                forceRender>
+                <Form form={messageForm} onFinish={handleMessageSubmit}
+                  // ref={announcementRef}
+                >
+                  <Form.Item
+                    name='tolandlordMessage'
+                  >
+                    <Input.TextArea style={{ width: '100%', height: '200px' }}
+                                    placeholder='请输入想给房东发送的信息...'></Input.TextArea>
+                  </Form.Item>
+                  <Divider style={{ margin: '12px 0' }} />
+                  <div className={styles.modalfooter}>
+                    <Button onClick={() => {
+                      setIsSendMessage(false);
+                    }}>取消</Button>
+                    <Button type='primary' htmlType='submit' style={{ marginLeft: '20px' }}>确定</Button>
+                  </div>
+                </Form>
+              </Modal>
             </Fragment>
           );
         }}
@@ -417,6 +492,7 @@ const houseDetail = () => {
   );
 
   const { houseName } = houseData;
+  console.log(istenant);
   return (
     <div className={styles.container}>
       <PageContainer
@@ -472,14 +548,15 @@ const houseDetail = () => {
               }}
               bordered={false}
               extra={
-                <div>
+                istenant ? <></> : <div>
                   <Button type='primary' onClick={() => {
                     showModal('water');
                   }}>添加水费信息</Button>
                   <Button onClick={() => {
                     showModal('electricity');
                   }} style={{ marginLeft: '20px' }}>添加电费信息</Button>
-                </div>}
+                </div>
+              }
             >
               <WaterEle ref={waterEleRef} cRef={waterEleRef}></WaterEle>
             </Card>

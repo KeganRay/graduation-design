@@ -3,7 +3,7 @@ import {
   MobileOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Alert, message, Tabs, } from 'antd';
+import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { useIntl, history, FormattedMessage, SelectLang, useModel } from 'umi';
@@ -20,7 +20,7 @@ const LoginMessage = ({ content }) => (
       marginBottom: 24,
     }}
     message={content}
-    type="error"
+    type='error'
     showIcon
   />
 );
@@ -82,20 +82,25 @@ const Login = (props) => {
     await services.login(values).then(async (res) => {
       const msg = res.data;
       if (msg.code === 0) {
-        console.log('用户信息：',msg.data);
+        console.log('用户信息：', msg.data);
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
         });
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo(msg);
-        //房东
-        if(msg.data.userType===1){
+
+        if (msg.data.userType === 1) {//房东
           history.push('/houseSummary');
-        }else if(msg.data.userType===2){//租客
-          history.push('/houseSummary')
-        }else if(msg.data.userType===0){//超管
-          history.push('/houseSummary')
+        } else if (msg.data.userType === 2) {//租客
+          services.tenantFindHouseByAccount(msg.data.account).then((ress) => {
+            console.log(ress);
+            if (ress && ress.data && ress.data.code === 0) {
+              history.push(`/house-detail?houseId=${ress.data.data.houseId}`);
+            }
+          });
+        } else if (msg.data.userType === 0) {//超管
+          history.push('/houseSummary');
         }
       } else if (msg.code === -1) {
         message.error('请检查账号密码');
@@ -121,11 +126,11 @@ const Login = (props) => {
         <LoginForm
           logo={
             <img
-              alt="logo"
+              alt='logo'
               src={`https://uploadfile.huiyi8.com/up/b1/79/20/b17920d9a5413337f83258fe7039d333.png.270.jpg`}
             />
           }
-          title="易租居房源管理系统"
+          title='易租居房源管理系统'
           subTitle={'易租居房源管理系统管理您的住宅'}
           initialValues={{
             autoLogin: true,
@@ -148,14 +153,14 @@ const Login = (props) => {
         >
           <Tabs activeKey={type} onChange={setType}>
             <Tabs.TabPane
-              key="account"
+              key='account'
               tab={intl.formatMessage({
                 id: 'pages.login.accountLogin.tab',
                 defaultMessage: '账户密码登录',
               })}
             />
             <Tabs.TabPane
-              key="mobile"
+              key='mobile'
               tab={intl.formatMessage({
                 id: 'pages.login.phoneLogin.tab',
                 defaultMessage: '手机号登录',
@@ -174,7 +179,7 @@ const Login = (props) => {
           {type === 'account' && (
             <>
               <ProFormText
-                name="account"
+                name='account'
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
@@ -188,15 +193,15 @@ const Login = (props) => {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id="pages.login.username.required"
-                        defaultMessage="请输入用户名!"
+                        id='pages.login.username.required'
+                        defaultMessage='请输入用户名!'
                       />
                     ),
                   },
                 ]}
               />
               <ProFormText.Password
-                name="password"
+                name='password'
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
@@ -210,8 +215,8 @@ const Login = (props) => {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id="pages.login.password.required"
-                        defaultMessage="请输入密码！"
+                        id='pages.login.password.required'
+                        defaultMessage='请输入密码！'
                       />
                     ),
                   },
@@ -220,7 +225,7 @@ const Login = (props) => {
             </>
           )}
 
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
+          {status === 'error' && loginType === 'mobile' && <LoginMessage content='验证码错误' />}
           {type === 'mobile' && (
             <>
               <ProFormText
@@ -228,7 +233,7 @@ const Login = (props) => {
                   size: 'large',
                   prefix: <MobileOutlined className={styles.prefixIcon} />,
                 }}
-                name="mobile"
+                name='mobile'
                 placeholder={intl.formatMessage({
                   id: 'pages.login.phoneNumber.placeholder',
                   defaultMessage: '手机号',
@@ -238,8 +243,8 @@ const Login = (props) => {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id="pages.login.phoneNumber.required"
-                        defaultMessage="请输入手机号！"
+                        id='pages.login.phoneNumber.required'
+                        defaultMessage='请输入手机号！'
                       />
                     ),
                   },
@@ -247,8 +252,8 @@ const Login = (props) => {
                     pattern: /^1\d{10}$/,
                     message: (
                       <FormattedMessage
-                        id="pages.login.phoneNumber.invalid"
-                        defaultMessage="手机号格式错误！"
+                        id='pages.login.phoneNumber.invalid'
+                        defaultMessage='手机号格式错误！'
                       />
                     ),
                   },
@@ -279,14 +284,14 @@ const Login = (props) => {
                     defaultMessage: '获取验证码',
                   });
                 }}
-                name="captcha"
+                name='captcha'
                 rules={[
                   {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id="pages.login.captcha.required"
-                        defaultMessage="请输入验证码！"
+                        id='pages.login.captcha.required'
+                        defaultMessage='请输入验证码！'
                       />
                     ),
                   },
@@ -310,8 +315,8 @@ const Login = (props) => {
               marginBottom: 24,
             }}
           >
-            <ProFormCheckbox noStyle name="autoLogin">
-              <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
+            <ProFormCheckbox noStyle name='autoLogin'>
+              <FormattedMessage id='pages.login.rememberMe' defaultMessage='自动登录' />
             </ProFormCheckbox>
             <a
               style={{
@@ -319,7 +324,7 @@ const Login = (props) => {
               }}
               onClick={handleRegistered}
             >
-              <FormattedMessage id="menu.registered.users" defaultMessage="注册用户" />
+              <FormattedMessage id='menu.registered.users' defaultMessage='注册用户' />
             </a>
             <Register
               onRef={(ref) => {

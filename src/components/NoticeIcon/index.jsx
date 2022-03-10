@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState,React } from 'react';
 import { Tag, message } from 'antd';
 import { groupBy } from 'lodash';
 import moment from 'moment';
@@ -113,15 +113,15 @@ const NoticeIconView = () => {
       onClear={(title, key) => clearReadState(title, key)}
       loading={false}
       clearText="清空"
-      viewMoreText="查看更多"
-      onViewMore={() => message.info('Click on view more')}
+      viewMoreText="刷新"
+      onViewMore={() => message.info('点了刷新')}
       clearClose
     >
       <NoticeIcon.Tab
         tabKey="notification"
         count={unreadMsg.notification}
         list={noticeData.notification}
-        title="通知"
+        title="消息通知"
         emptyText="你已查看所有通知"
         showViewMore
       />
@@ -129,8 +129,8 @@ const NoticeIconView = () => {
         tabKey="message"
         count={unreadMsg.message}
         list={noticeData.message}
-        title="消息"
-        emptyText="您已读完所有消息"
+        title="公告"
+        emptyText="您已读完所有公告"
         showViewMore
       />
       <NoticeIcon.Tab

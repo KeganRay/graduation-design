@@ -11,7 +11,7 @@ const getNotices = (req, res) => {
       {
         id: '000000002',
         avatar: 'https://gw.alipayobjects.com/zos/rmsportal/OKJXDXrmkNshAMvwtvhu.png',
-        title: '你推荐的 曲妮妮 已通过第三轮面试',
+        title: '你推荐1111的 曲妮妮 已通过第三轮面试',
         datetime: '2017-08-08',
         type: 'notification',
       },
