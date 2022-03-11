@@ -247,12 +247,14 @@ const houseDetail = () => {
       const currentTime = `${Time[0]}-${Time[1]}-${Time[2]}`;
       const param = {
         landlordId: houseData.landlordId || '',//房东ID
+        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png',//消息的logo
         title: `${houseData.tenantMessage.tenantName || ''}  发来一条信息`,//标题
         description: value.tolandlordMessage || '',//描述
-        status: 0,//新的信息状态都为1未读状态
+        isRead: false,//信息是否已读
         noticeType: 'message',//message为租客给房东发的信息 feeInfo为缴费信息
         date: currentTime,//时间
       };
+      console.log(param);
       services.submitMessage(param).then((res) => {
         if (res && res.data && res.data.code === 0) {
           message.success(res.data.msg, 1, () => {

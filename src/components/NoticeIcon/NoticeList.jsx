@@ -33,6 +33,7 @@ const NoticeList = ({
         className={styles.list}
         dataSource={list}
         renderItem={(item, i) => {
+          console.log('此通知',item);
           const itemCls = classNames(styles.item, {
             [styles.read]: item.read,
           }); // eslint-disable-next-line no-nested-ternary
@@ -59,6 +60,7 @@ const NoticeList = ({
                   <div className={styles.title}>
                     {item.title}
                     <div className={styles.extra}>{item.extra}</div>
+                    <div style={{float:"right"}}>{item.date}</div>
                   </div>
                 }
                 description={
