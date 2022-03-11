@@ -39,7 +39,7 @@ export async function submitAnnouncement(payload){
   return axios.post('/api/house/submit-announcement',payload)
 }
 
-//提交房屋公告
+//租客提交消息通知
 export async function submitMessage(payload){
   return axios.post('/api/house/submit-message',payload)
 }

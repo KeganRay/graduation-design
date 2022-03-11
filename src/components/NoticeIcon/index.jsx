@@ -46,7 +46,7 @@ const NoticeIconView = () => {
   const { currentUser } = initialState || {};
   const [notices, setNotices] = useState([]);//所有类型的通知
   const [unreadMsg, setunreadMsg] = useState([]);//所有类型的通知
-  const [unreadNum,setUnreadNum] = useState(0)
+  const [unreadNum, setUnreadNum] = useState(0);
 
   //componentdidmount
   useEffect(() => {
@@ -61,8 +61,8 @@ const NoticeIconView = () => {
           const noticeData = getNoticeData(notices);//此时noticeData是一个有类型分类的数组
           console.log(noticeData);
           const unreadMsg = getUnreadData(noticeData || {});//根据是否已读进行分类
-          console.log(1111111,unreadMsg);
-          handleUnreadNum(unreadMsg)
+          console.log(1111111, unreadMsg);
+          handleUnreadNum(unreadMsg);
           setNotices(noticeData || []);
           setunreadMsg(unreadMsg || []);
 
@@ -96,9 +96,12 @@ const NoticeIconView = () => {
    * @date 2022--38-11
    */
   const changeReadState = (noticeId) => {
-    const param = { noticeId, userId: initialState.userId };
+    console.log(initialState);
+    const param = { noticeId, userId: initialState.currentUser.userId };
     services.handleReadNotice(param).then((res) => {
-
+      if (res && res.data.code === 0) {
+        handleRefresh()
+      }
     });
   };
 
@@ -124,15 +127,15 @@ const NoticeIconView = () => {
     Object.keys(unreadMsg).forEach((item) => {
       Num += unreadMsg[item];
     });
-    console.log('数字：',Num);
-    setUnreadNum(Num)
+    console.log('数字：', Num);
+    setUnreadNum(Num);
   };
 
 
   return (
     <NoticeIcon
       className={styles.action}
-      count={unreadNum||""}
+      count={unreadNum || ''}
       onItemClick={(item) => {
         changeReadState(item.noticeId);
       }}
