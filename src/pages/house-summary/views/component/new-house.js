@@ -44,7 +44,12 @@ const StepResult = (props) => {
 const StepForm = () => {
   const [stepData, setStepData] = useState({});//每走一步的值
   const [address, setAddress] = useState('');//省市区
+  const [housePic, setHousePic] = useState([]);//房子照片的照片
+  const [current, setCurrent] = useState(0);
+  const [payPic, setPayPic] = useState('');//支付照片
   const { initialState } = useModel('@@initialState'); //用于全局管理登陆者信息
+  const formRef = useRef();
+
   useEffect(() => {
     console.log('stepData:', stepData);
   }, [stepData]);
@@ -97,8 +102,7 @@ const StepForm = () => {
     imgWindow.document.write(image.outerHTML);
   };
 
-  const [current, setCurrent] = useState(0);
-  const formRef = useRef();
+
   return (
     //头顶信息
     <PageContainer content='注册房源：请填写房源信息以及租客信息'>
@@ -124,7 +128,30 @@ const StepForm = () => {
             title='填写房屋信息'
             initialValues={stepData}
             onFinish={async (values) => {
-              setStepData({ ...stepData, houseAddress: address, ...values });
+              console.log(values);//房屋信息
+              const {
+                contractTime,
+                electricityUnitPrice,
+                houseAddressDetail,
+                houseArea,
+                houseName,
+                housePrice,
+                waterUnitPrice,
+              } = values;
+              const stepOneData = {
+                contractTime,
+                electricityUnitPrice,
+                houseAddress: address,
+                houseAddressDetail,
+                houseArea,
+                houseName,
+                housePic,
+                payPic,
+                housePrice,
+                waterUnitPrice,
+              };
+              console.log(stepOneData);
+              setStepData({ ...stepOneData});
               return true;
             }}
           >
@@ -145,7 +172,7 @@ const StepForm = () => {
               <ProFormCascader
                 width={'sm'}
                 name='houseEasyAddress'
-                fieldProps={{ options: addressData, onChange: handleAddressChange}}
+                fieldProps={{ options: addressData, onChange: handleAddressChange }}
                 rules={[
                   {
                     required: true,
@@ -264,15 +291,45 @@ const StepForm = () => {
             />
 
             <ProFormUploadButton
-              name='housePic'
+              name='housePicture'
               label='房子的照片'
               max={5}
               fieldProps={{
                 name: 'file',
                 listType: 'picture-card',
                 onPreview: handlePreview,
+                onChange: (value) => {
+                  if (value && Array.isArray(value.fileList) && value.fileList.length > 0) {
+                    const newHousePic = [];
+                    value.fileList.map((item) => {
+                      if (item.response) {
+                        console.log('~~~~', housePic, item.response.file.id);
+                        newHousePic.push(item.response.file.id);
+                      }
+                    });
+                    setHousePic(newHousePic);
+                  }
+                },
               }}
-              action='/upload.do'
+              action={'/api/upload/upload-photo'}
+            />
+            <ProFormUploadButton
+              name='payPicture'
+              label='收款码照片'
+              max={1}
+              fieldProps={{
+                name: 'file',
+                listType: 'picture-card',
+                onPreview: handlePreview,
+                onChange: (value) => {
+                  if (value && Array.isArray(value.fileList) && value.fileList.length > 0) {
+                    if (value.fileList[0].response) {
+                      setPayPic(value.fileList[0].response.file.id);
+                    }
+                  }
+                },
+              }}
+              action={'/api/upload/upload-photo'}
             />
           </StepsForm.StepForm>
 
@@ -282,6 +339,7 @@ const StepForm = () => {
             onFinish={async (values) => {
               if (initialState.currentUser && values) {
                 const { name, phone, userId } = initialState.currentUser;
+                console.log(stepData);
                 const param = {
                   ...stepData,
                   tenantMessage: values,
@@ -352,13 +410,13 @@ const StepForm = () => {
                     required: true,
                     message: '请填写租客证件号',
                   }, {
-                    // validator: async (rule, value, callback) => {
-                    //   if (value) {
-                    //     if (!/^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(value)) {
-                    //       return Promise.reject('请正确输入身份证号码');
-                    //     }
-                    //   }
-                    // },
+                    validator: async (rule, value, callback) => {
+                      if (value) {
+                        if (!/^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(value)) {
+                          return Promise.reject('请正确输入身份证号码');
+                        }
+                      }
+                    },
                   },
                 ]}
               />

@@ -109,6 +109,7 @@ const Index = () => {
             dataSource={[{}, ...list]}
             renderItem={(item) => {
               if (item && item.houseId) {
+                console.log(item);
                 return (
                   <div>
                     <List.Item key={item.houseId}>
@@ -124,7 +125,7 @@ const Index = () => {
                       >
                         <Card.Meta
                           avatar={<img alt='' className={style.cardAvatar}
-                                       src={item?.housePic[0]?.thumbUrl || noDataLogo} />}
+                                       src={`http://localhost:27018/upload/getImages/${item.housePic[0]}` || noDataLogo} />}
                           title={<a
                             style={{ fontSize: '22px', fontWeight: 'bold' }}>{item?.houseName || ''}</a>}
                           description={

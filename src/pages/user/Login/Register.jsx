@@ -111,13 +111,13 @@ class Register extends Component {
             <Form.Item label='电话号码(作为账号登录)' name={'phone'} rules={[
               { required: true, message: '请输入电话号码' },
               {
-                // validator: async (rule, value, callback) => {
-                //   if (value) {
-                //     if (!/^1(?:3\d|4[4-9]|5[0-35-9]|6[67]|7[013-8]|8\d|9\d)\d{8}$/.test(value)) {
-                //       return Promise.reject('请正确输入电话号码');
-                //     }
-                //   }
-                // },
+                validator: async (rule, value, callback) => {
+                  if (value) {
+                    if (!/^1(?:3\d|4[4-9]|5[0-35-9]|6[67]|7[013-8]|8\d|9\d)\d{8}$/.test(value)) {
+                      return Promise.reject('请正确输入电话号码');
+                    }
+                  }
+                },
               }]}>
               <Input placeholder='请输入电话号码' />
             </Form.Item>
@@ -134,12 +134,12 @@ class Register extends Component {
               </Radio.Group>
             </Form.Item>
             <Form.Item label='身份证号码' name={'IDcardNumber'} rules={[{ required: false }, {
-              // validator: (rule, value, callback) => {
-              //   if (!/^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(value)) {
-              //     callback('请正确输入身份证号码');
-              //   }
-              //   callback();
-              // },
+              validator: (rule, value, callback) => {
+                if (!/^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(value)) {
+                  callback('请正确输入身份证号码');
+                }
+                callback();
+              },
             }]}>
               <Input placeholder='请输入身份证号码' />
             </Form.Item>

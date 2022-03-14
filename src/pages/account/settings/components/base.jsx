@@ -31,7 +31,7 @@ const AvatarView = ({ avatar }) => (
     <div className={styles.avatar}>
       <img src={avatar} alt="avatar" />
     </div>
-    <Upload showUploadList={false}>
+    <Upload showUploadList={false} action={''}>
       <div className={styles.button_view}>
         <Button>
           <UploadOutlined />

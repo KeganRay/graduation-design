@@ -44,3 +44,8 @@ export async function submitMessage(payload){
   return axios.post('/api/house/submit-message',payload)
 }
 
+//租客缴纳费用
+export async function payFee(payload){
+  return axios.post('/api/house/pay-fee',payload)
+}
+

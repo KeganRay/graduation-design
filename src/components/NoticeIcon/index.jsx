@@ -59,9 +59,9 @@ const NoticeIconView = () => {
         if (res && res.data.code === 0) {
           const notices = res.data.data;
           const noticeData = getNoticeData(notices);//此时noticeData是一个有类型分类的数组
-          console.log(noticeData);
+          console.log('noticedata', noticeData);
           const unreadMsg = getUnreadData(noticeData || {});//根据是否已读进行分类
-          console.log(1111111, unreadMsg);
+          console.log('unreadMsg', unreadMsg);
           handleUnreadNum(unreadMsg);
           setNotices(noticeData || []);
           setunreadMsg(unreadMsg || []);
@@ -96,11 +96,11 @@ const NoticeIconView = () => {
    * @date 2022--38-11
    */
   const changeReadState = (noticeId) => {
-    console.log(initialState);
+    console.log(initialState,noticeId);
     const param = { noticeId, userId: initialState.currentUser.userId };
     services.handleReadNotice(param).then((res) => {
       if (res && res.data.code === 0) {
-        handleRefresh()
+        handleRefresh();
       }
     });
   };
@@ -127,11 +127,12 @@ const NoticeIconView = () => {
     Object.keys(unreadMsg).forEach((item) => {
       Num += unreadMsg[item];
     });
-    console.log('数字：', Num);
     setUnreadNum(Num);
   };
 
-
+  if (notices) {
+    console.log('zhuyi:',notices);
+  }
   return (
     <NoticeIcon
       className={styles.action}
@@ -155,9 +156,9 @@ const NoticeIconView = () => {
         showViewMore
       />
       <NoticeIcon.Tab
-        tabKey='feeChargeTab'
-        count={unreadMsg.feeCharge}
-        list={notices.feeCharge}
+        tabKey='feeTab'
+        count={unreadMsg.pay}
+        list={notices.pay}
         title='费用通知'
         emptyText='您已读完所有公告'
         showViewMore

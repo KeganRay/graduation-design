@@ -3,6 +3,7 @@ import { Card, Col, Row, Tabs, Button, Empty } from 'antd';
 import { Column } from '@ant-design/charts';
 import styles from './waterELe.less';
 import numeral from 'numeral';
+import noDataLogo from '../../../../../public/image/noData.jpg';
 
 const { TabPane } = Tabs;
 const rankingListData = [];
@@ -101,125 +102,132 @@ const WaterEle = ({ cRef }) => {
           }}
         >
           <TabPane tab='水费' key='water'>
-            <Row>
-              <Col xl={18} lg={12} md={12} sm={24} xs={24}>
-                <div className={styles.salesBar}>
-                  <Column
-                    height={300}
-                    forceFit
-                    data={waterData}
-                    xField={`month`}
-                    yField='waterPrice'
-                    xAxis={{
-                      visible: true,
-                      title: {
-                        visible: false,
-                      },
-                    }}
-                    yAxis={{
-                      visible: true,
-                      title: {
-                        text:"费用",
-                        visible: false,
-                      },
-                    }}
-                    title={{
-                      visible: true,
-                      text: '本年度水费',
-                      style: {
-                        fontSize: 14,
-                      },
-                    }}
-                    meta={{
-                      y: {
-                        alias: '111',
-                      },
-                    }}
-                  />
-                </div>
-              </Col>
-              <Col xl={6} lg={12} md={12} sm={24} xs={24}>
-                <div className={styles.salesRank}>
-                  <h4 className={styles.rankingTitle}>水费排行</h4>
-                  <ul className={styles.rankingList}>
-                    {waterListData.map((item, i) => (
-                      <li key={item.title}>
+            {waterData.length > 0 ?
+              <Row>
+                <Col xl={18} lg={12} md={12} sm={24} xs={24}>
+                  <div className={styles.salesBar}>
+                    <Column
+                      height={300}
+                      forceFit
+                      data={waterData}
+                      xField={`month`}
+                      yField='waterPrice'
+                      xAxis={{
+                        visible: true,
+                        title: {
+                          visible: false,
+                        },
+                      }}
+                      yAxis={{
+                        visible: true,
+                        title: {
+                          text: '费用',
+                          visible: false,
+                        },
+                      }}
+                      title={{
+                        visible: true,
+                        text: '本年度水费',
+                        style: {
+                          fontSize: 14,
+                        },
+                      }}
+                      meta={{
+                        y: {
+                          alias: '111',
+                        },
+                      }}
+                    />
+                  </div>
+                </Col>
+                <Col xl={6} lg={12} md={12} sm={24} xs={24}>
+                  <div className={styles.salesRank}>
+                    <h4 className={styles.rankingTitle}>水费排行</h4>
+                    <ul className={styles.rankingList}>
+                      {waterListData.map((item, i) => (
+                        <li key={item.title}>
                       <span className={`${styles.rankingItemNumber} ${i < 3 ? styles.active : ''}`}>
                         {i + 1}
                       </span>
-                        <span className={styles.rankingItemTitle} title={item.title}>
+                          <span className={styles.rankingItemTitle} title={item.title}>
                         {item.month ? item.month : ''}
                       </span>
-                        <span className={styles.rankingItemTitle}> {item.waterNum ? item.waterNum : ''} 吨</span>
-                        <span className={styles.rankingItemValue}>
+                          <span className={styles.rankingItemTitle}> {item.waterNum ? item.waterNum : ''} 吨</span>
+                          <span className={styles.rankingItemValue}>
                         {item.waterPrice ? item.waterPrice : ''} 元
                       </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Col>
-            </Row>
+                        </li>
+                      ))
+                      }
+                    </ul>
+                  </div>
+                </Col>
+              </Row> : <div style={{ display: 'flex', justifyContent: 'center' }}><img src={`${noDataLogo}`} alt='' /></div>}
+
+
           </TabPane>
           <TabPane tab='电费' key='electricity'>
-            <Row>
-              <Col xl={18} lg={12} md={12} sm={24} xs={24}>
-                <div className={styles.salesBar}>
-                  <Column
-                    height={300}
-                    forceFit
-                    data={eleData}
-                    xField={`month`}
-                    yField='elePrice'
-                    xAxis={{
-                      visible: true,
-                      title: {
-                        visible: false,
-                      },
-                    }}
-                    yAxis={{
-                      visible: true,
-                      title: {
-                        visible: false,
-                      },
-                    }}
-                    title={{
-                      visible: true,
-                      text: '本年度电费',
-                      style: {
-                        fontSize: 14,
-                      },
-                    }}
-                    meta={{
-                      y: {
-                        alias: '电费：',
-                      },
-                    }}
-                  />
-                </div>
-              </Col>
-              <Col xl={6} lg={12} md={12} sm={24} xs={24}>
-                <div className={styles.salesRank}>
-                  <h4 className={styles.rankingTitle}>电费排行</h4>
-                  <ul className={styles.rankingList}>
-                    {eleListData.map((item, i) => (
-                      <li key={item.title}>
+            {eleData.length > 0 ? <Row>
+                <Col xl={18} lg={12} md={12} sm={24} xs={24}>
+                  <div className={styles.salesBar}>
+                    <Column
+                      height={300}
+                      forceFit
+                      data={eleData}
+                      xField={`month`}
+                      yField='elePrice'
+                      xAxis={{
+                        visible: true,
+                        title: {
+                          visible: false,
+                        },
+                      }}
+                      yAxis={{
+                        visible: true,
+                        title: {
+                          visible: false,
+                        },
+                      }}
+                      title={{
+                        visible: true,
+                        text: '本年度电费',
+                        style: {
+                          fontSize: 14,
+                        },
+                      }}
+                      meta={{
+                        y: {
+                          alias: '电费：',
+                        },
+                      }}
+                    />
+                  </div>
+                </Col>
+                <Col xl={6} lg={12} md={12} sm={24} xs={24}>
+                  <div className={styles.salesRank}>
+                    <h4 className={styles.rankingTitle}>电费排行</h4>
+                    <ul className={styles.rankingList}>
+                      {
+                        eleListData.map((item, i) => (
+                          <li key={item.title}>
                       <span className={`${styles.rankingItemNumber} ${i < 3 ? styles.active : ''}`}>
                         {i + 1}
                       </span>
-                        <span className={styles.rankingItemTitle} title={item.title}>
+                            <span className={styles.rankingItemTitle} title={item.title}>
                         {item.month ? item.month : ''}
                       </span>
-                        <span className={styles.rankingItemTitle}> {item.eleNum ? item.eleNum : ''} 度</span>
-                        <span className={styles.rankingItemValue}>
+                            <span className={styles.rankingItemTitle}> {item.eleNum ? item.eleNum : ''} 度</span>
+                            <span className={styles.rankingItemValue}>
                         {item.elePrice ? item.elePrice : ''} 元
                       </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Col>
-            </Row>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                </Col>
+              </Row> :
+              <div style={{ display: 'flex', justifyContent: 'center' }}><img src={`${noDataLogo}`} alt='' /></div>}
+
           </TabPane>
         </Tabs>
       </div>
