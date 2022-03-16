@@ -48,7 +48,8 @@ class Register extends Component {
         ...values,
         email: `${values.email}${this.state.Aftermail}`,
       };
-      services.registeuser(values).then((res) => {
+
+      services.registeuser(param).then((res) => {
         if (res && res.data && res.data.code === 0) {
           message.success(
             {
@@ -58,7 +59,6 @@ class Register extends Component {
             });
         }
       });
-      console.log(param);
     }).catch(error => {
       console.log(error);
     });

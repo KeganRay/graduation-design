@@ -9,3 +9,8 @@ export async function queryHouseList(userId){
 export async function delHouse(param){
   return axios.post(`/api/house/del-house`,param);
 }
+
+//租客根据账号查询房子
+export async function tenantFindHouseByAccount(payload) {
+  return axios.get(`/api/house/tenantFindHouseByAccount?account=${payload}`);
+}

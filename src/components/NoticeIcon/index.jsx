@@ -11,7 +11,7 @@ const getNoticeData = (notices) => {
   if (!notices || notices.length === 0 || !Array.isArray(notices)) {
     return {};
   }
-  console.log('通知：', notices);
+  // console.log('通知：', notices);
   const newNotices = notices.map((notice) => {
     if (notice.isRead === true) {
       notice.read = true;
@@ -59,9 +59,9 @@ const NoticeIconView = () => {
         if (res && res.data.code === 0) {
           const notices = res.data.data;
           const noticeData = getNoticeData(notices);//此时noticeData是一个有类型分类的数组
-          console.log('noticedata', noticeData);
+          // console.log('noticedata', noticeData);
           const unreadMsg = getUnreadData(noticeData || {});//根据是否已读进行分类
-          console.log('unreadMsg', unreadMsg);
+          // console.log('unreadMsg', unreadMsg);
           handleUnreadNum(unreadMsg);
           setNotices(noticeData || []);
           setunreadMsg(unreadMsg || []);
@@ -96,7 +96,7 @@ const NoticeIconView = () => {
    * @date 2022--38-11
    */
   const changeReadState = (noticeId) => {
-    console.log(initialState,noticeId);
+    // console.log(initialState,noticeId);
     const param = { noticeId, userId: initialState.currentUser.userId };
     services.handleReadNotice(param).then((res) => {
       if (res && res.data.code === 0) {
@@ -122,7 +122,7 @@ const NoticeIconView = () => {
 
   //设置未读个数
   const handleUnreadNum = (unreadMsg) => {
-    console.log(unreadMsg);
+    // console.log(unreadMsg);
     let Num = 0;
     Object.keys(unreadMsg).forEach((item) => {
       Num += unreadMsg[item];
@@ -130,9 +130,6 @@ const NoticeIconView = () => {
     setUnreadNum(Num);
   };
 
-  if (notices) {
-    console.log('zhuyi:',notices);
-  }
   return (
     <NoticeIcon
       className={styles.action}

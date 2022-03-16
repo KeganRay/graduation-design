@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect,React  }from 'react';
 import { Form, Button, Col, Input, Popover, Progress, Row, Select, message } from 'antd';
 import { Link, useRequest, history } from 'umi';
 import { fakeRegister } from './service';

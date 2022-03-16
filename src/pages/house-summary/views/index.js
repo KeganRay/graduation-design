@@ -20,16 +20,27 @@ const Index = () => {
 
     //componentDidMount
     useEffect(() => {
-      const { userId } = initialState.currentUser;
-      if (userId) {
-        services.queryHouseList(userId).then((res) => {
-          if (res && res.data.code === 0 && res.data.data.length > 0) {
-            console.log('数组列表', res);
-            const list = res?.data?.data || [];
-            setList(list);
+      const { userId,userType,phone } = initialState.currentUser;
+      //房东
+      if(userType===1){
+        if (userId) {
+          services.queryHouseList(userId).then((res) => {
+            if (res && res.data.code === 0 && res.data.data.length > 0) {
+              console.log('房源列表', res);
+              const list = res?.data?.data || [];
+              setList(list);
+            }
+          });
+        }
+      }else if(userType===2){
+        services.tenantFindHouseByAccount(phone).then((ress) => {
+          console.log(ress);
+          if (ress && ress.data && ress.data.code === 0) {
+            history.push(`/house-detail?houseId=${ress.data.data.houseId}`);
           }
         });
       }
+
     }, []);
 
     //创建房源
@@ -45,7 +56,7 @@ const Index = () => {
             const { userId } = initialState.currentUser;
             services.queryHouseList(userId).then((res) => {
               if (res && res.data.code === 0 && res.data.data.length > 0) {
-                console.log('数组列表', res);
+                // console.log('数组列表', res);
                 const list = res?.data?.data || [];
                 setList(list);
                 setShowDel(false)
