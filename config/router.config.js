@@ -37,6 +37,11 @@ export default [
     icon: 'home',
     component: './house-summary/views/index',
   },
+  {
+    path:'/zhiyun',
+    name: 'zhiyun',
+    component: './zhiyun/views/index'
+  },
   //房子详情页
   {
     path: '/house-detail',
@@ -45,6 +50,10 @@ export default [
   {
     path: '/new-house',
     component: './house-summary/views/component/new-house',
+  },
+  {
+    path:'/user-management',
+    component: './user/user-management/views/index',
   },
   {
     path: '/dashboard',

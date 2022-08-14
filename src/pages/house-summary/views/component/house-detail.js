@@ -248,7 +248,7 @@ const houseDetail = () => {
         const currentTime = `${Time[0]}-${Time[1]}-${Time[2]}`;
         const param = {
           landlordId: houseData.landlordId || '',//房东ID
-          avatar: <WechatOutlined />,//消息的logo
+          avatar: "https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png",//消息的logo
           title: `${houseData.tenantMessage.tenantName || ''}  发来一条信息`,//标题
           description: value.tolandlordMessage || '',//描述
           isRead: false,//信息是否已读
@@ -337,7 +337,7 @@ const houseDetail = () => {
                   <Descriptions.Item label='公告'> {announcement ? announcement : '暂无公告...'}</Descriptions.Item>
                 </Descriptions>
                 <div className={styles.avatarHolder}>
-                  <img alt='' src={housePic ? `http://localhost:27018/upload/getImages/${housePic}` : noDataLogo} />
+                  <img alt='' src={housePic ? `http://localhost:27018/upload/getImages/${housePic[0]}` : noDataLogo} />
                 </div>
               </div>
             );

@@ -2,8 +2,8 @@ import React, { Component, useState } from 'react';
 import { Alert, message, Tabs, Modal, Form, Input, Radio, Button, Select, Popover, Progress } from 'antd';
 import { SmileTwoTone, HeartTwoTone, CheckCircleTwoTone } from '@ant-design/icons';
 import styles from './index.less';
-import * as services from './services';
-import { registeuser } from './services';
+import * as services from '../services/services';
+import { registeuser } from '../services/services';
 
 const { Option } = Select;
 

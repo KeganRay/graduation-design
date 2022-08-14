@@ -12,7 +12,7 @@ import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
 // import route from '../../../../mock/route';
 import Register from './Register';
-import * as services from './services';
+import * as services from '../services/services';
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -100,7 +100,7 @@ const Login = (props) => {
             }
           });
         } else if (msg.data.userType === 0) {//超管
-          history.push('/houseSummary');
+          history.push('/user-management');
         }
       } else if (msg.code === -1) {
         message.error('请检查账号密码');

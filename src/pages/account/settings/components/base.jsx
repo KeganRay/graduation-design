@@ -8,11 +8,12 @@ import ProForm, {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import { useModel, useRequest } from 'umi';
+import { history, useModel, useRequest } from 'umi';
 import { queryCurrent } from '../service';
 import { queryProvince, queryCity } from '../service';
 import styles from './BaseView.less';
 import * as services from '../services/service';
+import { queryUserInfo, updateUserInfo } from '../services/service';
 
 const validatorPhone = (rule, value, callback) => {
   if (!value[0]) {
@@ -52,10 +53,21 @@ const BaseView = () => {
 
   //componentdidmount
   useEffect(() => {
-    console.log('用户信息：', userInfo);
-    userDetail.setFieldsValue({
-      ...userInfo,
-    });
+    const { userId } = history.location.query;
+    if (userId) {
+      services.queryUserInfo(userId).then((res) => {
+        if(res&&res.data.code===0){
+          userDetail.setFieldsValue({
+            ...res.data.data
+          })
+        }
+        console.log(res);
+      });
+    } else {
+      userDetail.setFieldsValue({
+        ...userInfo,
+      });
+    }
   }, []);
 
 
@@ -65,15 +77,15 @@ const BaseView = () => {
    */
   const handleFinish = async (values) => {
     const param = {
-      userId:userInfo.userId,
-      ...values
-    }
-    await services.updateUserInfo(param).then((res)=>{
+      userId: userInfo.userId,
+      ...values,
+    };
+    await services.updateUserInfo(param).then((res) => {
       console.log(res);
-      if(res&&res.data&&res.data.code===0){
-        message.success(res.data.data,1)
+      if (res && res.data && res.data.code === 0) {
+        message.success(res.data.data, 1);
       }
-    })
+    });
   };
 
 
@@ -187,7 +199,7 @@ const BaseView = () => {
             </ProForm>
           </div>
           <div className={styles.right}>
-            <AvatarView avatar={userInfo.avatar} />
+            <AvatarView avatar={userInfo?.avatar || ''} />
           </div>
         </>
       )}

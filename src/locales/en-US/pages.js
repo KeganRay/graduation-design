@@ -23,7 +23,7 @@ export default {
   'pages.login.submit': 'Login',
   'pages.login.loginWith': 'Login with :',
   'pages.login.registerAccount': 'Register.jsx Account',
-  'pages.welcome.advancedComponent': 'Advanced Component',
+  'pages.welcome.advancedComponent': 'Advanced component',
   'pages.welcome.link': 'Welcome',
   'pages.welcome.advancedLayout': 'Advanced Layout',
   'pages.welcome.alertMessage': 'Faster and stronger heavy-duty components have been released.',

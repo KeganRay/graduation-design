@@ -5,7 +5,7 @@ import {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import styles from '../views/index.less';
+import styles from '../index.less';
 import { Button, Result } from 'antd';
 
 const OperationModal = (props) => {
