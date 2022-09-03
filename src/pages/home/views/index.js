@@ -4,7 +4,7 @@ class Index extends Component {
   render() {
     return (
       <div>
-        <h1>这次提交有问题！！！！</h1>
+        <h1>没毛病！！！！</h1>
       </div>
     );
   }
